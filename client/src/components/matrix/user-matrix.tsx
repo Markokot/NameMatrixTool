@@ -5,14 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "./user-avatar";
 import { Plus, X } from "lucide-react";
-import { USERNAMES, type Category, type UserCategory } from "@shared/schema";
+import { type Category, type UserCategory, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export function UserMatrix() {
   const [newCategory, setNewCategory] = useState({ name: "", date: "" });
+  const [newUser, setNewUser] = useState({ name: "", gender: "male" });
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
+  });
+
+  const { data: users = [] } = useQuery<User[]>({
+    queryKey: ["/api/users"],
   });
 
   const { data: userCategories = [] } = useQuery<UserCategory[]>({
@@ -43,9 +48,33 @@ export function UserMatrix() {
     },
   });
 
+  const userMutation = useMutation({
+    mutationFn: async (user: { name: string; gender: string; id?: number; avatarUrl?: string }) => {
+      if (user.id) {
+        await apiRequest("PUT", `/api/users/${user.id}`, user);
+      } else {
+        await apiRequest("POST", "/api/users", user);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      setNewUser({ name: "", gender: "male" });
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/users/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-categories"] });
+    },
+  });
+
   const userCategoryMutation = useMutation({
     mutationFn: async (category: {
-      username: string;
+      userId: number;
       categoryId: number;
       selected: boolean;
     }) => {
@@ -56,9 +85,21 @@ export function UserMatrix() {
     },
   });
 
-  const isSelected = (username: string, categoryId: number) => {
+  const handleAvatarChange = async (userId: number, file: File) => {
+    // В реальном приложении здесь был бы загрузка файла на сервер
+    // Для демонстрации просто создаем URL
+    const url = URL.createObjectURL(file);
+    await userMutation.mutateAsync({
+      id: userId,
+      name: users.find(u => u.id === userId)?.name || '',
+      gender: users.find(u => u.id === userId)?.gender || 'male',
+      avatarUrl: url
+    });
+  };
+
+  const isSelected = (userId: number, categoryId: number) => {
     return userCategories.some(
-      (c) => c.username === username && c.categoryId === categoryId && c.selected
+      (c) => c.userId === userId && c.categoryId === categoryId && c.selected
     );
   };
 
@@ -87,7 +128,36 @@ export function UserMatrix() {
           disabled={!newCategory.name || !newCategory.date}
         >
           <Plus className="h-4 w-4 mr-2" />
-          Добавить
+          Добавить забег
+        </Button>
+      </div>
+
+      <div className="flex gap-2 items-end">
+        <div className="flex-1">
+          <label className="text-sm">Имя</label>
+          <Input
+            value={newUser.name}
+            onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
+            placeholder="Новый участник"
+          />
+        </div>
+        <div className="w-32">
+          <label className="text-sm">Пол</label>
+          <select
+            className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
+            value={newUser.gender}
+            onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
+          >
+            <option value="male">М</option>
+            <option value="female">Ж</option>
+          </select>
+        </div>
+        <Button
+          onClick={() => userMutation.mutate(newUser)}
+          disabled={!newUser.name}
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Добавить участника
         </Button>
       </div>
 
@@ -138,21 +208,37 @@ export function UserMatrix() {
             </tr>
           </thead>
           <tbody>
-            {USERNAMES.map((username) => (
-              <tr key={username} className="border-t">
+            {users.map((user) => (
+              <tr key={user.id} className="border-t">
                 <td className="p-4">
                   <div className="flex items-center gap-3">
-                    <UserAvatar name={username} />
-                    <span className="font-medium">{username}</span>
+                    <div className="flex items-center gap-2">
+                      <UserAvatar
+                        name={user.name}
+                        gender={user.gender}
+                        avatarUrl={user.avatarUrl}
+                        onAvatarChange={(file) => handleAvatarChange(user.id, file)}
+                        showUpload
+                      />
+                      <span className="font-medium">{user.name}</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-2 text-red-500 hover:text-red-700 hover:bg-red-100"
+                      onClick={() => deleteUserMutation.mutate(user.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 </td>
                 {categories.map((category) => (
                   <td key={category.id} className="p-4 text-center">
                     <Checkbox
-                      checked={isSelected(username, category.id)}
+                      checked={isSelected(user.id, category.id)}
                       onCheckedChange={(checked) => {
                         userCategoryMutation.mutate({
-                          username,
+                          userId: user.id,
                           categoryId: category.id,
                           selected: checked === true,
                         });

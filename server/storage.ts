@@ -1,9 +1,12 @@
 import { 
   type Category, 
   type InsertCategory,
+  type User,
+  type InsertUser,
   type UserCategory, 
   type InsertUserCategory,
-  DEFAULT_CATEGORIES
+  DEFAULT_CATEGORIES,
+  DEFAULT_USERS
 } from "@shared/schema";
 
 export interface IStorage {
@@ -11,25 +14,38 @@ export interface IStorage {
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: number, category: InsertCategory): Promise<Category>;
   deleteCategory(id: number): Promise<void>;
+  getUsers(): Promise<User[]>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, user: InsertUser): Promise<User>;
+  deleteUser(id: number): Promise<void>;
   getUserCategories(): Promise<UserCategory[]>;
   updateUserCategory(category: InsertUserCategory): Promise<UserCategory>;
 }
 
 export class MemStorage implements IStorage {
   private categories: Map<number, Category>;
+  private users: Map<number, User>;
   private userCategories: Map<string, UserCategory>;
   private currentCategoryId: number;
+  private currentUserId: number;
   private currentUserCategoryId: number;
 
   constructor() {
     this.categories = new Map();
+    this.users = new Map();
     this.userCategories = new Map();
     this.currentCategoryId = 1;
+    this.currentUserId = 1;
     this.currentUserCategoryId = 1;
 
     // Initialize with default categories
     DEFAULT_CATEGORIES.forEach(cat => {
       this.createCategory(cat);
+    });
+
+    // Initialize with default users
+    DEFAULT_USERS.forEach(user => {
+      this.createUser(user);
     });
   }
 
@@ -72,12 +88,45 @@ export class MemStorage implements IStorage {
     }
   }
 
+  async getUsers(): Promise<User[]> {
+    const users = Array.from(this.users.values());
+    // Sort by name
+    return users.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const id = this.currentUserId++;
+    const newUser: User = { ...user, id };
+    this.users.set(id, newUser);
+    return newUser;
+  }
+
+  async updateUser(id: number, user: InsertUser): Promise<User> {
+    const existing = this.users.get(id);
+    if (!existing) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    const updated = { ...existing, ...user };
+    this.users.set(id, updated);
+    return updated;
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    this.users.delete(id);
+    // Remove all user categories associated with this user
+    for (const [key, userCategory] of this.userCategories.entries()) {
+      if (userCategory.userId === id) {
+        this.userCategories.delete(key);
+      }
+    }
+  }
+
   async getUserCategories(): Promise<UserCategory[]> {
     return Array.from(this.userCategories.values());
   }
 
   async updateUserCategory(category: InsertUserCategory): Promise<UserCategory> {
-    const key = `${category.username}-${category.categoryId}`;
+    const key = `${category.userId}-${category.categoryId}`;
     const existing = this.userCategories.get(key);
 
     if (existing) {

@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer } from "http";
 import { storage } from "./storage";
-import { insertUserCategorySchema, insertCategorySchema } from "@shared/schema";
+import { insertUserCategorySchema, insertCategorySchema, insertUserSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express) {
   app.get("/api/categories", async (_req, res) => {
@@ -25,6 +25,30 @@ export async function registerRoutes(app: Express) {
   app.delete("/api/categories/:id", async (req, res) => {
     const id = parseInt(req.params.id);
     await storage.deleteCategory(id);
+    res.json({ success: true });
+  });
+
+  app.get("/api/users", async (_req, res) => {
+    const users = await storage.getUsers();
+    res.json(users);
+  });
+
+  app.post("/api/users", async (req, res) => {
+    const body = insertUserSchema.parse(req.body);
+    const user = await storage.createUser(body);
+    res.json(user);
+  });
+
+  app.put("/api/users/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const body = insertUserSchema.parse(req.body);
+    const user = await storage.updateUser(id, body);
+    res.json(user);
+  });
+
+  app.delete("/api/users/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    await storage.deleteUser(id);
     res.json({ success: true });
   });
 

@@ -102,6 +102,12 @@
       "categoryId": 6,
       "selected": true,
       "id": 4
+    },
+    {
+      "userId": 7,
+      "categoryId": 6,
+      "selected": false,
+      "id": 5
     }
   ]
 }

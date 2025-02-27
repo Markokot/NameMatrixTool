@@ -1,0 +1,107 @@
+{
+  "categories": [
+    {
+      "name": "ММ",
+      "date": "01.03",
+      "id": 1
+    },
+    {
+      "name": "МПМ",
+      "date": "02.03",
+      "id": 2
+    },
+    {
+      "name": "БН",
+      "date": "03.03",
+      "id": 3
+    },
+    {
+      "name": "RunIT",
+      "date": "04.03",
+      "id": 4
+    },
+    {
+      "name": "КМ",
+      "date": "05.03",
+      "id": 5
+    },
+    {
+      "name": "OGr",
+      "date": "06.03",
+      "id": 6
+    },
+    {
+      "name": "Vgr",
+      "date": "07.03",
+      "id": 7
+    }
+  ],
+  "users": [
+    {
+      "name": "Андрей",
+      "gender": "male",
+      "id": 1
+    },
+    {
+      "name": "Аня",
+      "gender": "female",
+      "id": 2
+    },
+    {
+      "name": "Саша",
+      "gender": "male",
+      "id": 3
+    },
+    {
+      "name": "Вася",
+      "gender": "male",
+      "id": 4
+    },
+    {
+      "name": "Ира",
+      "gender": "female",
+      "id": 5
+    },
+    {
+      "name": "Лида",
+      "gender": "female",
+      "id": 6
+    },
+    {
+      "name": "Женя",
+      "gender": "male",
+      "id": 7
+    },
+    {
+      "name": "Виталя",
+      "gender": "male",
+      "id": 8
+    }
+  ],
+  "userCategories": [
+    {
+      "userId": 1,
+      "categoryId": 5,
+      "selected": true,
+      "id": 1
+    },
+    {
+      "userId": 2,
+      "categoryId": 4,
+      "selected": true,
+      "id": 2
+    },
+    {
+      "userId": 8,
+      "categoryId": 5,
+      "selected": true,
+      "id": 3
+    },
+    {
+      "userId": 4,
+      "categoryId": 6,
+      "selected": true,
+      "id": 4
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+
 declare global {
   interface Window {
     Telegram: {
@@ -41,8 +42,5 @@ export function sendTelegramEvent(eventName: string, eventData?: any): void {
     window.TelegramGameProxy.receiveEvent(eventName, eventData);
   } else {
     console.log('TelegramGameProxy не доступен или не имеет метода receiveEvent', { eventName, eventData });
-  }
-}f (window.TelegramGameProxy && typeof window.TelegramGameProxy.receiveEvent === 'function') {
-    window.TelegramGameProxy.receiveEvent(eventName, eventData);
   }
 }

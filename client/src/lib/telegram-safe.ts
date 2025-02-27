@@ -27,6 +27,23 @@ export function withTelegram(callback: () => void): void {
  */
 export function safeHandleResize(callback: (event: UIEvent) => void): void {
   const safeCallback = (event: UIEvent) => {
+
+/**
+ * Безопасно разворачивает окно Telegram WebApp
+ */
+export function safeExpandTelegramWebApp(): void {
+  if (window.Telegram?.WebApp) {
+    try {
+      window.Telegram.WebApp.expand();
+      console.log('Telegram WebApp успешно развернут');
+    } catch (error) {
+      console.error('Ошибка при разворачивании Telegram WebApp:', error);
+    }
+  } else {
+    console.log('Telegram WebApp недоступен');
+  }
+}
+
     try {
       callback(event);
     } catch (error) {
@@ -36,9 +53,4 @@ export function safeHandleResize(callback: (event: UIEvent) => void): void {
   
   window.addEventListener('resize', safeCallback);
   return () => window.removeEventListener('resize', safeCallback);
-}
-    } catch (error) {
-      console.error('Ошибка при вызове Telegram API:', error);
-    }
-  }
 }

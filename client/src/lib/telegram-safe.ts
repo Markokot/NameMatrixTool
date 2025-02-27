@@ -20,3 +20,25 @@ export function withTelegram(callback: () => void): void {
     }
   }
 }
+
+/**
+ * Безопасно обрабатывает события изменения размера окна
+ * @param callback Функция обработки изменения размера
+ */
+export function safeHandleResize(callback: (event: UIEvent) => void): void {
+  const safeCallback = (event: UIEvent) => {
+    try {
+      callback(event);
+    } catch (error) {
+      console.error('Ошибка при обработке изменения размера:', error);
+    }
+  };
+  
+  window.addEventListener('resize', safeCallback);
+  return () => window.removeEventListener('resize', safeCallback);
+}
+    } catch (error) {
+      console.error('Ошибка при вызове Telegram API:', error);
+    }
+  }
+}

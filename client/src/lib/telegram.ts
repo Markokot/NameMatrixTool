@@ -39,7 +39,11 @@ export function initTelegram() {
  */
 export function sendTelegramEvent(eventName: string, eventData?: any): void {
   if (window.TelegramGameProxy && typeof window.TelegramGameProxy.receiveEvent === 'function') {
-    window.TelegramGameProxy.receiveEvent(eventName, eventData);
+    try {
+      window.TelegramGameProxy.receiveEvent(eventName, eventData);
+    } catch (error) {
+      console.error('Ошибка при отправке события в TelegramGameProxy:', error);
+    }
   } else {
     console.log('TelegramGameProxy не доступен или не имеет метода receiveEvent', { eventName, eventData });
   }

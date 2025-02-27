@@ -22,6 +22,12 @@ export async function registerRoutes(app: Express) {
     res.json(category);
   });
 
+  app.delete("/api/categories/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    await storage.deleteCategory(id);
+    res.json({ success: true });
+  });
+
   app.get("/api/user-categories", async (_req, res) => {
     const categories = await storage.getUserCategories();
     res.json(categories);

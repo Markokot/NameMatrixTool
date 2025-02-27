@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "./user-avatar";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { USERNAMES, type Category, type UserCategory } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
@@ -30,6 +30,16 @@ export function UserMatrix() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
       setNewCategory({ name: "", date: "" });
+    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/categories/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user-categories"] });
     },
   });
 
@@ -89,17 +99,27 @@ export function UserMatrix() {
               {categories.map((category) => (
                 <th key={category.id} className="p-4">
                   <div className="space-y-2">
-                    <Input
-                      value={category.name}
-                      onChange={(e) => 
-                        categoryMutation.mutate({
-                          id: category.id,
-                          name: e.target.value,
-                          date: category.date
-                        })
-                      }
-                      className="text-center font-medium"
-                    />
+                    <div className="flex justify-between items-center">
+                      <Input
+                        value={category.name}
+                        onChange={(e) => 
+                          categoryMutation.mutate({
+                            id: category.id,
+                            name: e.target.value,
+                            date: category.date
+                          })
+                        }
+                        className="text-center font-medium"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="ml-2 text-red-500 hover:text-red-700 hover:bg-red-100"
+                        onClick={() => deleteCategoryMutation.mutate(category.id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                     <Input
                       value={category.date}
                       onChange={(e) => 

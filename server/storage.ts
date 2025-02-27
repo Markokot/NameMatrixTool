@@ -10,6 +10,7 @@ export interface IStorage {
   getCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: number, category: InsertCategory): Promise<Category>;
+  deleteCategory(id: number): Promise<void>;
   getUserCategories(): Promise<UserCategory[]>;
   updateUserCategory(category: InsertUserCategory): Promise<UserCategory>;
 }
@@ -33,7 +34,15 @@ export class MemStorage implements IStorage {
   }
 
   async getCategories(): Promise<Category[]> {
-    return Array.from(this.categories.values());
+    const categories = Array.from(this.categories.values());
+    // Sort by date
+    return categories.sort((a, b) => {
+      const [dayA, monthA] = a.date.split('.');
+      const [dayB, monthB] = b.date.split('.');
+      const dateA = new Date(2024, parseInt(monthA) - 1, parseInt(dayA));
+      const dateB = new Date(2024, parseInt(monthB) - 1, parseInt(dayB));
+      return dateA.getTime() - dateB.getTime();
+    });
   }
 
   async createCategory(category: InsertCategory): Promise<Category> {
@@ -51,6 +60,16 @@ export class MemStorage implements IStorage {
     const updated = { ...existing, ...category };
     this.categories.set(id, updated);
     return updated;
+  }
+
+  async deleteCategory(id: number): Promise<void> {
+    this.categories.delete(id);
+    // Remove all user categories associated with this category
+    for (const [key, userCategory] of this.userCategories.entries()) {
+      if (userCategory.categoryId === id) {
+        this.userCategories.delete(key);
+      }
+    }
   }
 
   async getUserCategories(): Promise<UserCategory[]> {

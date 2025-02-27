@@ -12,11 +12,15 @@ declare global {
         };
       };
     };
+    TelegramGameProxy?: {
+      receiveEvent: (eventName: string, eventData: string) => void;
+    };
   }
 }
 
 export function initTelegram() {
-  if (window.Telegram) {
+  // Инициализация WebApp только если он доступен
+  if (window.Telegram?.WebApp) {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();
   }

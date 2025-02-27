@@ -12,6 +12,9 @@ declare global {
         };
       };
     };
+    TelegramGameProxy?: {
+      receiveEvent: (eventName: string, eventData?: any) => void;
+    };
   }
 }
 
@@ -25,5 +28,16 @@ export function initTelegram() {
     } catch (error) {
       console.log('Не удалось развернуть WebApp:', error);
     }
+  }
+}
+
+/**
+ * Безопасно отправляет событие в TelegramGameProxy
+ * @param eventName Название события
+ * @param eventData Данные события (опционально)
+ */
+export function sendTelegramEvent(eventName: string, eventData?: any): void {
+  if (window.TelegramGameProxy && typeof window.TelegramGameProxy.receiveEvent === 'function') {
+    window.TelegramGameProxy.receiveEvent(eventName, eventData);
   }
 }

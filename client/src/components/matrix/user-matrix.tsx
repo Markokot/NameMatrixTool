@@ -52,15 +52,6 @@ export function UserMatrix() {
     );
   };
 
-  const formatDate = (date: string) => {
-    try {
-      const [year, month, day] = date.split('-');
-      return `${day}.${month}`;
-    } catch {
-      return date;
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex gap-2 items-end">
@@ -110,7 +101,7 @@ export function UserMatrix() {
                       className="text-center font-medium"
                     />
                     <Input
-                      value={formatDate(category.date)}
+                      value={category.date}
                       onChange={(e) => 
                         categoryMutation.mutate({
                           id: category.id,

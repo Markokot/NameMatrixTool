@@ -52,19 +52,28 @@ export function UserMatrix() {
     );
   };
 
+  const formatDate = (date: string) => {
+    try {
+      const [year, month, day] = date.split('-');
+      return `${day}.${month}`;
+    } catch {
+      return date;
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2 items-end">
-        <div>
+        <div className="flex-1">
           <label className="text-sm">Название</label>
           <Input
             value={newCategory.name}
             onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
-            placeholder="Новая категория"
+            placeholder="Новый забег"
           />
         </div>
-        <div>
-          <label className="text-sm">Дата (дд.мм)</label>
+        <div className="w-32">
+          <label className="text-sm">Дата</label>
           <Input
             value={newCategory.date}
             onChange={(e) => setNewCategory(prev => ({ ...prev, date: e.target.value }))}
@@ -101,7 +110,7 @@ export function UserMatrix() {
                       className="text-center font-medium"
                     />
                     <Input
-                      value={category.date}
+                      value={formatDate(category.date)}
                       onChange={(e) => 
                         categoryMutation.mutate({
                           id: category.id,
@@ -109,8 +118,8 @@ export function UserMatrix() {
                           date: e.target.value
                         })
                       }
+                      className="text-center w-24 mx-auto"
                       pattern="\d{2}\.\d{2}"
-                      className="text-center"
                     />
                   </div>
                 </th>

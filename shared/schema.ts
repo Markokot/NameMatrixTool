@@ -5,7 +5,7 @@ import { z } from "zod";
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  date: date("date").notNull(),
+  date: text("date").notNull(),
 });
 
 export const userCategories = pgTable("user_categories", {
@@ -44,11 +44,11 @@ export const USERNAMES = [
 
 // Default categories that will be created initially
 export const DEFAULT_CATEGORIES = [
-  { name: "ММ", date: new Date("2024-03-01") },
-  { name: "МПМ", date: new Date("2024-03-02") },
-  { name: "БН", date: new Date("2024-03-03") },
-  { name: "RunIT", date: new Date("2024-03-04") },
-  { name: "КМ", date: new Date("2024-03-05") },
-  { name: "OGr", date: new Date("2024-03-06") },
-  { name: "Vgr", date: new Date("2024-03-07") },
+  { name: "ММ", date: "01.03" },
+  { name: "МПМ", date: "02.03" },
+  { name: "БН", date: "03.03" },
+  { name: "RunIT", date: "04.03" },
+  { name: "КМ", date: "05.03" },
+  { name: "OGr", date: "06.03" },
+  { name: "Vgr", date: "07.03" },
 ] as const;

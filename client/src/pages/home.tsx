@@ -12,7 +12,7 @@ export default function Home() {
     <div className="container py-4 max-w-5xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>Матрица категорий пользователей</CardTitle>
+          <CardTitle>Забег</CardTitle>
         </CardHeader>
         <CardContent>
           <UserMatrix />

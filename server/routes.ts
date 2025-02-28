@@ -2,6 +2,28 @@ import type { Express } from "express";
 import { createServer } from "http";
 import { storage } from "./storage";
 import { insertUserCategorySchema, insertCategorySchema, insertUserSchema } from "@shared/schema";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+// Настройка multer для загрузки аватаров
+const avatarsDir = path.join(__dirname, "..", "uploads", "avatars");
+if (!fs.existsSync(avatarsDir)) {
+  fs.mkdirSync(avatarsDir, { recursive: true });
+}
+
+const storage_config = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, avatarsDir);
+  },
+  filename: (_req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, 'avatar-' + uniqueSuffix + ext);
+  }
+});
+
+const upload = multer({ storage: storage_config });
 
 export async function registerRoutes(app: Express) {
   app.get("/api/categories", async (_req, res) => {
@@ -62,6 +84,42 @@ export async function registerRoutes(app: Express) {
     const category = await storage.updateUserCategory(body);
     res.json(category);
   });
+
+  // Маршрут для загрузки аватара пользователя
+  app.post("/api/users/:id/avatar", upload.single('avatar'), async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const file = req.file;
+      
+      if (!file) {
+        return res.status(400).json({ message: "Файл не загружен" });
+      }
+      
+      // Обновляем поле avatarUrl у пользователя
+      const avatarUrl = `/api/avatars/${file.filename}`;
+      await storage.updateUserAvatar(id, avatarUrl);
+      
+      res.json({ success: true, avatarUrl });
+    } catch (error) {
+      console.error("Ошибка загрузки аватара:", error);
+      res.status(500).json({ message: "Ошибка загрузки аватара" });
+    }
+  });
+
+  // Маршрут для получения аватара пользователя
+  app.get("/api/avatars/:filename", (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(avatarsDir, filename);
+    
+    if (fs.existsSync(filePath)) {
+      res.sendFile(filePath);
+    } else {
+      res.status(404).json({ message: "Аватар не найден" });
+    }
+  });
+
+  // Статический маршрут для директории с аватарами
+  app.use('/uploads/avatars', express.static(avatarsDir));
 
   return createServer(app);
 }

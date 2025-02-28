@@ -21,6 +21,8 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
     if (file && onAvatarChange) {
       onAvatarChange(file);
     }
+    // Reset input value после выбора файла
+    event.target.value = '';
   };
 
   return (

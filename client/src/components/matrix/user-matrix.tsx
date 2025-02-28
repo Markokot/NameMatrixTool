@@ -85,16 +85,29 @@ export function UserMatrix() {
     },
   });
 
-  const handleAvatarChange = async (userId: number, file: File) => {
-    // В реальном приложении здесь был бы загрузка файла на сервер
-    // Для демонстрации просто создаем URL
-    const url = URL.createObjectURL(file);
-    await userMutation.mutateAsync({
-      id: userId,
-      name: users.find(u => u.id === userId)?.name || '',
-      gender: users.find(u => u.id === userId)?.gender || 'male',
-      avatarUrl: url
-    });
+  const avatarMutation = useMutation({
+    mutationFn: async ({ userId, file }: { userId: number; file: File }) => {
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const response = await fetch(`/api/users/${userId}/avatar`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка загрузки аватара');
+      }
+
+      return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+    },
+  });
+
+  const handleAvatarChange = (userId: number, file: File) => {
+    avatarMutation.mutate({ userId, file });
   };
 
   const isSelected = (userId: number, categoryId: number) => {

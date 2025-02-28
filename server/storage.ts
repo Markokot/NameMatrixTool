@@ -20,6 +20,7 @@ export interface IStorage {
   deleteUser(id: number): Promise<void>;
   getUserCategories(): Promise<UserCategory[]>;
   updateUserCategory(category: InsertUserCategory): Promise<UserCategory>;
+  updateUserAvatar(id: number, avatarUrl: string): Promise<User>; // Added function
 }
 
 import fs from 'fs';
@@ -66,7 +67,7 @@ export class MemStorage implements IStorage {
     try {
       if (fs.existsSync(this.dataFile)) {
         const data = JSON.parse(fs.readFileSync(this.dataFile, 'utf8'));
-        
+
         // Load categories
         if (data.categories) {
           data.categories.forEach((cat: Category) => {
@@ -76,7 +77,7 @@ export class MemStorage implements IStorage {
             }
           });
         }
-        
+
         // Load users
         if (data.users) {
           data.users.forEach((user: User) => {
@@ -86,7 +87,7 @@ export class MemStorage implements IStorage {
             }
           });
         }
-        
+
         // Load user categories
         if (data.userCategories) {
           data.userCategories.forEach((uc: UserCategory) => {
@@ -173,14 +174,16 @@ export class MemStorage implements IStorage {
   }
 
   async updateUser(id: number, user: InsertUser): Promise<User> {
-    const existing = this.users.get(id);
-    if (!existing) {
-      throw new Error(`User with id ${id} not found`);
+    const existingUser = this.users.get(id);
+
+    // Сохраняем avatarUrl, если он существует в текущем пользователе
+    if (existingUser && existingUser.avatarUrl && !user.avatarUrl) {
+      user.avatarUrl = existingUser.avatarUrl;
     }
-    const updated = { ...existing, ...user };
-    this.users.set(id, updated);
+
+    this.users.set(id, { ...user, id });
     this.saveToFile();
-    return updated;
+    return { ...user, id };
   }
 
   async deleteUser(id: number): Promise<void> {
@@ -216,6 +219,17 @@ export class MemStorage implements IStorage {
     this.userCategories.set(key, newCategory);
     this.saveToFile();
     return newCategory;
+  }
+
+  async updateUserAvatar(id: number, avatarUrl: string): Promise<User> {
+    const user = this.users.get(id);
+    if (!user) {
+      throw new Error(`Пользователь с ID ${id} не найден`);
+    }
+    user.avatarUrl = avatarUrl;
+    this.users.set(id, user);
+    this.saveToFile();
+    return user;
   }
 }
 

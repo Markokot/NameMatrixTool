@@ -1,10 +1,16 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer } from "http";
 import { storage } from "./storage";
 import { insertUserCategorySchema, insertCategorySchema, insertUserSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// Создаем переменные __filename и __dirname для модулей ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Настройка multer для загрузки аватаров
 const avatarsDir = path.join(__dirname, "..", "uploads", "avatars");

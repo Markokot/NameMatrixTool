@@ -231,7 +231,7 @@ export function UserMatrix() {
                         gender={user.gender}
                         avatarUrl={user.avatarUrl}
                         onAvatarChange={(file) => handleAvatarChange(user.id, file)}
-                        showUpload
+                        showUpload={true} // Added showUpload prop - this may not be sufficient to fix the upload issue.
                       />
                       <span className="font-medium">{user.name}</span>
                     </div>

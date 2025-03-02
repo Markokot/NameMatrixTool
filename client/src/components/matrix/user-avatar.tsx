@@ -1,7 +1,8 @@
+
 import { UserCircle2, Upload } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface UserAvatarProps {
   name: string;
@@ -16,9 +17,15 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
   const bgColor = gender === "male" ? "bg-blue-100" : "bg-pink-100";
   const iconColor = gender === "male" ? "text-blue-500" : "text-pink-500";
 
+  // Добавляем логирование для отладки
+  useEffect(() => {
+    console.log("UserAvatar реднерится с параметрами:", { name, gender, avatarUrl, showUpload });
+  }, [name, gender, avatarUrl, showUpload]);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onAvatarChange) {
+      console.log("Файл выбран:", file.name);
       onAvatarChange(file);
     }
     // Reset input value после выбора файла
@@ -26,7 +33,17 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
   };
 
   return (
-    <div className="relative group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+    <div 
+      className="relative group" 
+      onMouseEnter={() => {
+        console.log("Mouse enter");
+        setIsHovered(true);
+      }} 
+      onMouseLeave={() => {
+        console.log("Mouse leave");
+        setIsHovered(false);
+      }}
+    >
       <Avatar className="h-8 w-8">
         {avatarUrl ? (
           <AvatarImage src={avatarUrl} alt={name} />
@@ -37,9 +54,9 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
         )}
       </Avatar>
 
-      {showUpload && isHovered && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <label>
+      {showUpload && (
+        <div className="absolute inset-0 flex items-center justify-center cursor-pointer">
+          <label className="cursor-pointer w-full h-full flex items-center justify-center">
             <input
               type="file"
               className="hidden"

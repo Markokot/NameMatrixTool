@@ -108,6 +108,12 @@
       "categoryId": 6,
       "selected": false,
       "id": 5
+    },
+    {
+      "userId": 2,
+      "categoryId": 5,
+      "selected": false,
+      "id": 6
     }
   ]
 }

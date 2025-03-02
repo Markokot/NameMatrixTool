@@ -1,4 +1,3 @@
-
 // Определяем типы для интерфейса Telegram 
 declare global {
   interface Window {
@@ -15,7 +14,7 @@ declare global {
       };
     };
     TelegramGameProxy?: {
-      receiveEvent: (eventName: string, eventData?: any) => void;
+      receiveEvent?: (eventName: string, eventData?: any) => void;
     };
   }
 }
@@ -47,7 +46,7 @@ export function isTelegramAvailable(): boolean {
  */
 export function isTelegramGameProxyAvailable(): boolean {
   return typeof window !== 'undefined' && 
-         window.TelegramGameProxy !== undefined &&
+         window.TelegramGameProxy !== undefined && 
          typeof window.TelegramGameProxy.receiveEvent === 'function';
 }
 
@@ -104,7 +103,8 @@ export function initTelegram() {
 export function sendTelegramEvent(eventName: string, eventData?: any): void {
   if (isTelegramGameProxyAvailable()) {
     try {
-      window.TelegramGameProxy!.receiveEvent(eventName, eventData);
+      // Используем безопасный доступ через optional chaining
+      window.TelegramGameProxy?.receiveEvent?.(eventName, eventData);
       console.log(`Событие ${eventName} успешно отправлено в Telegram`, eventData);
     } catch (error) {
       console.error('Ошибка при отправке события в TelegramGameProxy:', error);
@@ -140,7 +140,7 @@ export async function sendTelegramApiEvent(event: TelegramEvent): Promise<void> 
 // React Hook для отправки Telegram событий через API
 export function useSendTelegramEvent() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (event: TelegramEvent) => sendTelegramApiEvent(event),
     onSuccess: () => {

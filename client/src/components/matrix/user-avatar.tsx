@@ -17,7 +17,6 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
   const bgColor = gender === "male" ? "bg-blue-100" : "bg-pink-100";
   const iconColor = gender === "male" ? "text-blue-500" : "text-pink-500";
 
-  // Добавляем логирование для отладки
   useEffect(() => {
     console.log("UserAvatar реднерится с параметрами:", { name, gender, avatarUrl, showUpload });
   }, [name, gender, avatarUrl, showUpload]);
@@ -44,34 +43,28 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
         setIsHovered(false);
       }}
     >
-      <Avatar className="h-8 w-8">
+      <Avatar className="h-7 w-7">
         {avatarUrl ? (
           <AvatarImage src={avatarUrl} alt={name} />
         ) : (
           <AvatarFallback className={bgColor}>
-            <UserCircle2 className={`h-4 w-4 ${iconColor}`} />
+            <UserCircle2 className={`h-3 w-3 ${iconColor}`} />
           </AvatarFallback>
         )}
       </Avatar>
 
-      {showUpload && (
-        <div className="absolute inset-0 flex items-center justify-center cursor-pointer">
-          <label className="cursor-pointer w-full h-full flex items-center justify-center">
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-full bg-black/50 hover:bg-black/70"
-            >
-              <Upload className="h-4 w-4 text-white" />
-            </Button>
-          </label>
-        </div>
+      {showUpload && isHovered && (
+        <label className="cursor-pointer absolute inset-0 flex items-center justify-center z-10">
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+            <Upload className="h-3 w-3 text-white" />
+          </div>
+        </label>
       )}
     </div>
   );

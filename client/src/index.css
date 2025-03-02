@@ -11,3 +11,24 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+@layer base {
+  html {
+    font-size: 14px;
+  }
+  
+  @media (max-width: 768px) {
+    html {
+      font-size: 12px;
+    }
+    
+    input, button, th, td {
+      font-size: 0.9rem;
+      padding: 0.4rem !important;
+    }
+    
+    .table-container {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+  }
+}

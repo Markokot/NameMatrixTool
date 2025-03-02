@@ -175,7 +175,7 @@ export function UserMatrix() {
       </div>
 
       <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[640px]">
+        <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr>
               <th className="p-4 text-left font-medium">Имя</th>
@@ -185,11 +185,11 @@ export function UserMatrix() {
                     <div className="flex justify-between items-center">
                       <Input
                         value={category.name}
-                        onChange={(e) => 
+                        onChange={(e) =>
                           categoryMutation.mutate({
                             id: category.id,
                             name: e.target.value,
-                            date: category.date
+                            date: category.date,
                           })
                         }
                         className="text-center font-medium"
@@ -205,11 +205,11 @@ export function UserMatrix() {
                     </div>
                     <Input
                       value={category.date}
-                      onChange={(e) => 
+                      onChange={(e) =>
                         categoryMutation.mutate({
                           id: category.id,
                           name: category.name,
-                          date: e.target.value
+                          date: e.target.value,
                         })
                       }
                       className="text-center w-24 mx-auto"
@@ -231,7 +231,7 @@ export function UserMatrix() {
                         gender={user.gender}
                         avatarUrl={user.avatarUrl}
                         onAvatarChange={(file) => handleAvatarChange(user.id, file)}
-                        showUpload={true} // Added showUpload prop - this may not be sufficient to fix the upload issue.
+                        showUpload={true}
                       />
                       <span className="font-medium">{user.name}</span>
                     </div>

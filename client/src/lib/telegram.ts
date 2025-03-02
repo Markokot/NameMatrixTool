@@ -1,80 +1,91 @@
 
-declare global {
-  interface Window {
-    Telegram: {
-      WebApp: {
-        ready: () => void;
-        expand: () => void;
-        MainButton: {
-          show: () => void;
-          hide: () => void;
-          setText: (text: string) => void;
-          onClick: (fn: () => void) => void;
-        };
-      };
-    };
-    TelegramGameProxy?: {
-      receiveEvent: (eventName: string, eventData?: any) => void;
-    };
+// Файл для взаимодействия с Telegram API
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+// Определяем типы для Telegram событий
+export type TelegramEventType = 'user_login' | 'user_logout' | 'category_change' | 'matrix_update';
+
+export interface TelegramEvent {
+  type: TelegramEventType;
+  userId?: number;
+  userName?: string;
+  categoryId?: number;
+  categoryName?: string;
+  details?: string;
+}
+
+// Функция для отправки событий в Telegram
+export async function sendTelegramEvent(event: TelegramEvent): Promise<void> {
+  try {
+    const response = await fetch('/api/telegram/webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to send Telegram event:', errorData);
+      throw new Error(`Failed to send Telegram event: ${errorData.message || 'Unknown error'}`);
+    }
+  } catch (error) {
+    console.error('Error sending Telegram event:', error);
+    // Возможно, здесь стоит добавить какую-то обработку ошибок
   }
 }
 
-export function initTelegram() {
-  // Инициализация WebApp только если он доступен в контексте Telegram
-  if (window.Telegram?.WebApp) {
-    window.Telegram.WebApp.ready();
-    // Оборачиваем вызов expand в try-catch, чтобы избежать ошибок
-    try {
-      window.Telegram.WebApp.expand();
-    } catch (error) {
-      console.log('Не удалось развернуть WebApp:', error);
+// React Hook для отправки Telegram событий
+export function useSendTelegramEvent() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (event: TelegramEvent) => sendTelegramEvent(event),
+    onSuccess: () => {
+      // Можно добавить какое-то действие после успешной отправки события
+      // Например, обновить какие-то данные
+      // queryClient.invalidateQueries({ queryKey: ['someData'] });
+    },
+    onError: (error) => {
+      console.error('Error in telegram event mutation:', error);
+      // Можно добавить обработку ошибок, например показать уведомление
     }
-  }
+  });
 }
 
-/**
- * Безопасно отправляет событие в TelegramGameProxy
- * @param eventName Название события
- * @param eventData Данные события (опционально)
- */
-export function sendTelegramEvent(eventName: string, eventData?: any): void {
-  if (window.TelegramGameProxy && typeof window.TelegramGameProxy.receiveEvent === 'function') {
-    try {
-      window.TelegramGameProxy.receiveEvent(eventName, eventData);
-    } catch (error) {
-      console.error('Ошибка при отправке события в TelegramGameProxy:', error);
-    }
-  } else {
-    console.log('TelegramGameProxy не доступен или не имеет метода receiveEvent', { eventName, eventData });
-  }
+// Вспомогательные функции для разных типов событий
+export function sendUserLoginEvent(userId: number, userName: string) {
+  return sendTelegramEvent({
+    type: 'user_login',
+    userId,
+    userName
+  });
 }
-/**
- * Утилита для безопасной работы с Telegram Game API
- */
 
-// Проверяем, доступен ли Telegram Game API
-export const isTelegramGameProxyAvailable = (): boolean => {
-  return typeof window !== 'undefined' && 
-         window.TelegramGameProxy !== undefined;
-};
+export function sendUserLogoutEvent(userId: number, userName: string) {
+  return sendTelegramEvent({
+    type: 'user_logout',
+    userId,
+    userName
+  });
+}
 
-// Безопасная функция отправки событий в Telegram
-export const sendTelegramEvent = (eventName: string, eventData?: any): void => {
-  if (isTelegramGameProxyAvailable()) {
-    try {
-      window.TelegramGameProxy.receiveEvent(eventName, eventData);
-    } catch (error) {
-      console.warn('Error sending event to Telegram Game Proxy:', error);
-    }
-  }
-};
+export function sendCategoryChangeEvent(userId: number, userName: string, categoryId: number, categoryName: string) {
+  return sendTelegramEvent({
+    type: 'category_change',
+    userId,
+    userName,
+    categoryId,
+    categoryName
+  });
+}
 
-// Объявляем типы для TypeScript
-declare global {
-  interface Window {
-    TelegramGameProxy?: {
-      receiveEvent: (eventName: string, eventData?: any) => void;
-      [key: string]: any;
-    };
-  }
+export function sendMatrixUpdateEvent(userId: number, userName: string, details: string) {
+  return sendTelegramEvent({
+    type: 'matrix_update',
+    userId,
+    userName,
+    details
+  });
 }

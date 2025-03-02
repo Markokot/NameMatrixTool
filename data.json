@@ -100,7 +100,7 @@
     {
       "userId": 4,
       "categoryId": 6,
-      "selected": true,
+      "selected": false,
       "id": 4
     },
     {
@@ -114,6 +114,12 @@
       "categoryId": 5,
       "selected": false,
       "id": 6
+    },
+    {
+      "userId": 4,
+      "categoryId": 5,
+      "selected": true,
+      "id": 7
     }
   ]
 }

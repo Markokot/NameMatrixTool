@@ -1,15 +1,44 @@
+/**
+ * client/src/lib/telegram-safe.ts
+ *
+ * Этот файл предоставляет безопасные обёртки для работы с Telegram API.
+ * Он включает функции для проверки доступности API, безопасного вызова функций,
+ * обработки событий и разворачивания окна Telegram WebApp.
+ * Также в нём добавлен глобальный обработчик ошибок, который подавляет ошибки,
+ * связанные с отсутствием TelegramGameProxy.
+ */
+
+// Если объект TelegramGameProxy не определён, создаём заглушку.
+if (typeof window !== 'undefined' && !window.TelegramGameProxy) {
+  window.TelegramGameProxy = {
+    receiveEvent: () => {
+      console.warn('Заглушка: TelegramGameProxy.receiveEvent вызвана, но объект не определён.');
+    }
+  };
+}
+
+// Глобальный обработчик ошибок для подавления ошибок, связанных с TelegramGameProxy
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (event) => {
+    if (event.error && event.error.message && event.error.message.includes('TelegramGameProxy')) {
+      event.preventDefault();
+      console.warn('Заглушена ошибка TelegramGameProxy:', event.error);
+      return false;
+    }
+  });
+}
 
 /**
- * Безопасная обертка для проверки доступности Telegram API
+ * Проверяет, доступен ли Telegram API.
  */
 export function isTelegramAvailable(): boolean {
-  return typeof window !== 'undefined' && 
+  return typeof window !== 'undefined' &&
          (window.Telegram !== undefined || window.TelegramGameProxy !== undefined);
 }
 
 /**
- * Безопасно вызывает функцию, только если Telegram API доступен
- * @param callback Функция для вызова
+ * Безопасно вызывает функцию, только если Telegram API доступен.
+ * @param callback Функция для вызова.
  */
 export function withTelegram(callback: () => void): void {
   if (isTelegramAvailable()) {
@@ -22,14 +51,25 @@ export function withTelegram(callback: () => void): void {
 }
 
 /**
- * Безопасно обрабатывает события изменения размера окна
- * @param callback Функция обработки изменения размера
+ * Безопасно обрабатывает события изменения размера окна.
+ * @param callback Функция обработки изменения размера.
+ * @returns Функция для удаления слушателя события.
  */
-export function safeHandleResize(callback: (event: UIEvent) => void): void {
+export function safeHandleResize(callback: (event: UIEvent) => void): () => void {
   const safeCallback = (event: UIEvent) => {
+    try {
+      callback(event);
+    } catch (error) {
+      console.error('Ошибка при обработке изменения размера:', error);
+    }
+  };
+
+  window.addEventListener('resize', safeCallback);
+  return () => window.removeEventListener('resize', safeCallback);
+}
 
 /**
- * Безопасно разворачивает окно Telegram WebApp
+ * Безопасно разворачивает окно Telegram WebApp.
  */
 export function safeExpandTelegramWebApp(): void {
   if (window.Telegram?.WebApp) {
@@ -44,13 +84,3 @@ export function safeExpandTelegramWebApp(): void {
   }
 }
 
-    try {
-      callback(event);
-    } catch (error) {
-      console.error('Ошибка при обработке изменения размера:', error);
-    }
-  };
-  
-  window.addEventListener('resize', safeCallback);
-  return () => window.removeEventListener('resize', safeCallback);
-}

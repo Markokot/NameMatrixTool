@@ -5,6 +5,7 @@ import { z } from "zod";
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  distance: text("distance").default("5 км"),
   date: text("date").notNull(),
 });
 
@@ -24,6 +25,7 @@ export const userCategories = pgTable("user_categories", {
 
 export const insertCategorySchema = createInsertSchema(categories).pick({
   name: true,
+  distance: true,
   date: true,
 });
 
@@ -48,13 +50,13 @@ export type UserCategory = typeof userCategories.$inferSelect;
 
 // Default categories that will be created initially
 export const DEFAULT_CATEGORIES = [
-  { name: "ММ", date: "01.03" },
-  { name: "МПМ", date: "02.03" },
-  { name: "БН", date: "03.03" },
-  { name: "RunIT", date: "04.03" },
-  { name: "КМ", date: "05.03" },
-  { name: "OGr", date: "06.03" },
-  { name: "Vgr", date: "07.03" },
+  { name: "ММ", distance: "5 км", date: "01.03" },
+  { name: "МПМ", distance: "10 км", date: "02.03" },
+  { name: "БН", distance: "21.1 км", date: "03.03" },
+  { name: "RunIT", distance: "5 км", date: "04.03" },
+  { name: "КМ", distance: "10 км", date: "05.03" },
+  { name: "OGr", distance: "42 км", date: "06.03" },
+  { name: "Vgr", distance: "5x4.2", date: "07.03" },
 ] as const;
 
 // Default users that will be created initially

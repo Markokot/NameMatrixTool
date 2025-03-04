@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export function UserMatrix() {
-  const [newCategory, setNewCategory] = useState({ name: "", date: "" });
+  const [newCategory, setNewCategory] = useState({ name: "", date: "", distance: "5 км" });
   const [newUser, setNewUser] = useState({ name: "", gender: "male" });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState<{type: 'user' | 'category', id: number} | null>(null);
@@ -37,7 +37,7 @@ export function UserMatrix() {
   });
 
   const categoryMutation = useMutation({
-    mutationFn: async (category: { name: string; date: string; id?: number }) => {
+    mutationFn: async (category: { name: string; date: string; id?: number; distance: string }) => {
       if (category.id) {
         await apiRequest("PUT", `/api/categories/${category.id}`, category);
       } else {
@@ -46,7 +46,7 @@ export function UserMatrix() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
-      setNewCategory({ name: "", date: "" });
+      setNewCategory({ name: "", date: "", distance: "5 км" });
     },
   });
 
@@ -170,6 +170,20 @@ export function UserMatrix() {
           />
         </div>
         <div className="w-24">
+          <label className="text-sm">Дистанция</label>
+          <select
+            value={newCategory.distance}
+            onChange={(e) => setNewCategory(prev => ({ ...prev, distance: e.target.value }))}
+            className="w-full h-9 rounded-md border border-input bg-background px-3 py-1"
+          >
+            <option value="5 км">5 км</option>
+            <option value="10 км">10 км</option>
+            <option value="21.1 км">21.1 км</option>
+            <option value="42 км">42 км</option>
+            <option value="5x4.2">5x4.2</option>
+          </select>
+        </div>
+        <div className="w-24">
           <label className="text-sm">Дата</label>
           <Input
             value={newCategory.date}
@@ -275,6 +289,7 @@ export function UserMatrix() {
                           categoryMutation.mutate({
                             id: category.id,
                             name: e.target.value,
+                            distance: category.distance,
                             date: category.date,
                           })
                         }
@@ -289,12 +304,31 @@ export function UserMatrix() {
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
+                    <select
+                      value={category.distance}
+                      onChange={(e) =>
+                        categoryMutation.mutate({
+                          id: category.id,
+                          name: category.name,
+                          distance: e.target.value,
+                          date: category.date,
+                        })
+                      }
+                      className="text-left w-24 h-9 rounded-md border border-input bg-background px-3 py-1"
+                    >
+                      <option value="5 км">5 км</option>
+                      <option value="10 км">10 км</option>
+                      <option value="21.1 км">21.1 км</option>
+                      <option value="42 км">42 км</option>
+                      <option value="5x4.2">5x4.2</option>
+                    </select>
                     <Input
                       value={category.date}
                       onChange={(e) =>
                         categoryMutation.mutate({
                           id: category.id,
                           name: category.name,
+                          distance: category.distance,
                           date: e.target.value,
                         })
                       }

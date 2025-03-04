@@ -119,7 +119,7 @@ export function UserMatrix() {
   return (
     <div className="space-y-4">
       <div className="flex gap-2 items-end">
-        <div className="flex-1">
+        <div className="w-64">
           <label className="text-sm">Название</label>
           <Input
             value={newCategory.name}

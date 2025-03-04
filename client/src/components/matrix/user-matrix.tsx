@@ -325,7 +325,6 @@ export function UserMatrix() {
                         </svg>
                       )}
                     </button>
-                    />
                   </td>
                 ))}
               </tr>

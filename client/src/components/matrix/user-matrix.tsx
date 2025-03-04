@@ -7,10 +7,22 @@ import { UserAvatar } from "./user-avatar";
 import { Plus, X } from "lucide-react";
 import { type Category, type UserCategory, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export function UserMatrix() {
   const [newCategory, setNewCategory] = useState({ name: "", date: "" });
   const [newUser, setNewUser] = useState({ name: "", gender: "male" });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteItem, setDeleteItem] = useState<{type: 'user' | 'category', id: number} | null>(null);
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -116,6 +128,28 @@ export function UserMatrix() {
     );
   };
 
+  const confirmDelete = (type: 'user' | 'category', id: number) => {
+    setDeleteItem({type, id});
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteItem) return;
+
+    try {
+      if (deleteItem.type === 'user') {
+        deleteUserMutation.mutate(deleteItem.id);
+      } else {
+        deleteCategoryMutation.mutate(deleteItem.id);
+      }
+    } catch (error) {
+      console.error(`Ошибка при удалении ${deleteItem.type === 'user' ? 'пользователя' : 'категории'}:`, error);
+    } finally {
+      setDeleteDialogOpen(false);
+      setDeleteItem(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2 items-end">
@@ -125,20 +159,23 @@ export function UserMatrix() {
             value={newCategory.name}
             onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Новый забег"
+            className="w-40"
           />
         </div>
-        <div className="w-32">
+        <div className="w-24">
           <label className="text-sm">Дата</label>
           <Input
             value={newCategory.date}
             onChange={(e) => setNewCategory(prev => ({ ...prev, date: e.target.value }))}
             placeholder="дд.мм"
             pattern="\d{2}\.\d{2}"
+            className="w-24"
           />
         </div>
         <Button
           onClick={() => categoryMutation.mutate(newCategory)}
           disabled={!newCategory.name || !newCategory.date}
+          className="w-48"
         >
           <Plus className="h-4 w-4 mr-2" />
           Добавить забег
@@ -152,9 +189,10 @@ export function UserMatrix() {
             value={newUser.name}
             onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Новый участник"
+            className="w-40"
           />
         </div>
-        <div className="w-32">
+        <div className="w-24">
           <label className="text-sm">Пол</label>
           <select
             className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
@@ -168,6 +206,7 @@ export function UserMatrix() {
         <Button
           onClick={() => userMutation.mutate(newUser)}
           disabled={!newUser.name}
+          className="w-48"
         >
           <Plus className="h-4 w-4 mr-2" />
           Добавить участника
@@ -198,7 +237,7 @@ export function UserMatrix() {
                         variant="ghost"
                         size="icon"
                         className="ml-2 text-red-500 hover:text-red-700 hover:bg-red-100"
-                        onClick={() => deleteCategoryMutation.mutate(category.id)}
+                        onClick={() => confirmDelete('category', category.id)}
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -224,7 +263,7 @@ export function UserMatrix() {
             {users.map((user) => (
               <tr key={user.id} className="border-t">
                 <td className="p-4 sticky left-0 z-10 bg-background">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 justify-between w-full">
                     <div className="flex items-center gap-2">
                       <UserAvatar
                         name={user.name}
@@ -238,8 +277,8 @@ export function UserMatrix() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="ml-2 text-red-500 hover:text-red-700 hover:bg-red-100"
-                      onClick={() => deleteUserMutation.mutate(user.id)}
+                      onClick={() => confirmDelete('user', user.id)}
+                      className="ml-auto"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -264,6 +303,22 @@ export function UserMatrix() {
           </tbody>
         </table>
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Подтвердите удаление</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите удалить этот {deleteItem?.type === 'user' ? 'профиль' : 'забег'}?
+              Это действие нельзя отменить.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Удалить</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

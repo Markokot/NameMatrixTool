@@ -220,8 +220,8 @@ export function UserMatrix() {
         </Button>
       </div>
 
-      <div className="w-full overflow-x-auto">
-        <div className="flex items-center gap-6 mb-4 ml-2">
+      <div className="sticky top-0 z-20 bg-background pt-2 pb-2">
+        <div className="flex items-center gap-6 mb-2 ml-2">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded border flex items-center justify-center">
               <svg 
@@ -259,9 +259,11 @@ export function UserMatrix() {
             <span className="text-sm">Купил слот</span>
           </div>
         </div>
+      </div>
+      <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
-            <tr className="sticky top-0 bg-background z-10">
+            <tr className="sticky top-[56px] bg-background z-10">
               <th className="p-4 text-left font-medium sticky left-0 z-10 bg-background">Имя</th>
               {categories.map((category) => (
                 <th key={category.id} className="p-2">

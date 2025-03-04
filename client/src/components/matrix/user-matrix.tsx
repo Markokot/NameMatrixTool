@@ -180,7 +180,7 @@ export function UserMatrix() {
             <tr className="sticky top-0 bg-background z-10">
               <th className="p-4 text-left font-medium sticky left-0 z-10 bg-background">Имя</th>
               {categories.map((category) => (
-                <th key={category.id} className="p-4">
+                <th key={category.id} className="p-2">
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <Input
@@ -192,7 +192,7 @@ export function UserMatrix() {
                             date: category.date,
                           })
                         }
-                        className="text-center font-medium w-24 mx-auto"
+                        className="text-left font-medium w-24"
                       />
                       <Button
                         variant="ghost"
@@ -212,7 +212,7 @@ export function UserMatrix() {
                           date: e.target.value,
                         })
                       }
-                      className="text-center w-24 mx-auto"
+                      className="text-left w-24"
                       pattern="\d{2}\.\d{2}"
                     />
                   </div>
@@ -246,7 +246,7 @@ export function UserMatrix() {
                   </div>
                 </td>
                 {categories.map((category) => (
-                  <td key={category.id} className="p-4 text-center">
+                  <td key={category.id} className="p-2 text-center">
                     <Checkbox
                       checked={isSelected(user.id, category.id)}
                       onCheckedChange={(checked) => {

@@ -120,6 +120,12 @@
       "categoryId": 5,
       "selected": "black",
       "id": 7
+    },
+    {
+      "userId": 2,
+      "categoryId": 2,
+      "selected": "none",
+      "id": 8
     }
   ]
 }

@@ -177,8 +177,8 @@ export function UserMatrix() {
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
-            <tr>
-              <th className="p-4 text-left font-medium">Имя</th>
+            <tr className="sticky top-0 bg-background z-10">
+              <th className="p-4 text-left font-medium sticky left-0 z-10 bg-background">Имя</th>
               {categories.map((category) => (
                 <th key={category.id} className="p-4">
                   <div className="space-y-2">
@@ -223,7 +223,7 @@ export function UserMatrix() {
           <tbody>
             {users.map((user) => (
               <tr key={user.id} className="border-t">
-                <td className="p-4">
+                <td className="p-4 sticky left-0 z-10 bg-background">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                       <UserAvatar

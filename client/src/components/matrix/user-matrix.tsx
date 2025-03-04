@@ -192,7 +192,7 @@ export function UserMatrix() {
                             date: category.date,
                           })
                         }
-                        className="text-center font-medium w-24" //Added width class here
+                        className="text-center font-medium"
                       />
                       <Button
                         variant="ghost"

@@ -122,6 +122,13 @@ export function UserMatrix() {
     avatarMutation.mutate({ userId, file });
   };
 
+  const getUserCategoryState = (userId: number, categoryId: number) => {
+    const userCategory = userCategories.find(
+      (c) => c.userId === userId && c.categoryId === categoryId
+    );
+    return userCategory ? userCategory.selected : "none";
+  };
+
   const isSelected = (userId: number, categoryId: number) => {
     return userCategories.some(
       (c) => c.userId === userId && c.categoryId === categoryId && c.selected
@@ -286,15 +293,38 @@ export function UserMatrix() {
                 </td>
                 {categories.map((category) => (
                   <td key={category.id} className="p-2 text-center">
-                    <Checkbox
-                      checked={isSelected(user.id, category.id)}
-                      onCheckedChange={(checked) => {
+                    <button 
+                      onClick={() => {
+                        const currentState = getUserCategoryState(user.id, category.id);
+                        let nextState = "none";
+                        if (currentState === "none") nextState = "black";
+                        else if (currentState === "black") nextState = "green";
+                        else if (currentState === "green") nextState = "none";
+                        
                         userCategoryMutation.mutate({
                           userId: user.id,
                           categoryId: category.id,
-                          selected: checked === true,
+                          selected: nextState,
                         });
                       }}
+                      className="w-5 h-5 rounded border flex items-center justify-center"
+                    >
+                      {getUserCategoryState(user.id, category.id) !== "none" && (
+                        <svg 
+                          className={`h-4 w-4 ${getUserCategoryState(user.id, category.id) === "green" ? "text-green-500" : "text-black"}`} 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor" 
+                          strokeWidth={2}
+                        >
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            d="M5 13l4 4L19 7" 
+                          />
+                        </svg>
+                      )}
+                    </button>
                     />
                   </td>
                 ))}

@@ -82,43 +82,43 @@
     {
       "userId": 1,
       "categoryId": 5,
-      "selected": true,
+      "selected": "black",
       "id": 1
     },
     {
       "userId": 2,
       "categoryId": 4,
-      "selected": true,
+      "selected": "black",
       "id": 2
     },
     {
       "userId": 8,
       "categoryId": 5,
-      "selected": true,
+      "selected": "black",
       "id": 3
     },
     {
       "userId": 4,
       "categoryId": 6,
-      "selected": false,
+      "selected": "none",
       "id": 4
     },
     {
       "userId": 7,
       "categoryId": 6,
-      "selected": false,
+      "selected": "none",
       "id": 5
     },
     {
       "userId": 2,
       "categoryId": 5,
-      "selected": false,
+      "selected": "none",
       "id": 6
     },
     {
       "userId": 4,
       "categoryId": 5,
-      "selected": true,
+      "selected": "black",
       "id": 7
     }
   ]

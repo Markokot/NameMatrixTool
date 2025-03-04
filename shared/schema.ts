@@ -19,7 +19,7 @@ export const userCategories = pgTable("user_categories", {
   id: serial("id").primaryKey(),
   userId: serial("user_id").references(() => users.id),
   categoryId: serial("category_id").references(() => categories.id),
-  selected: boolean("selected").notNull().default(false),
+  selected: text("selected").notNull().default("none"),
 });
 
 export const insertCategorySchema = createInsertSchema(categories).pick({

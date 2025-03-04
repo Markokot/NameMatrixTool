@@ -153,13 +153,13 @@ export function UserMatrix() {
   return (
     <div className="space-y-4">
       <div className="flex gap-2 items-end">
-        <div className="flex-1">
+        <div>
           <label className="text-sm">Название</label>
           <Input
             value={newCategory.name}
             onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Новый забег"
-            className="w-40"
+            className="w-60"
           />
         </div>
         <div className="w-24">
@@ -183,13 +183,13 @@ export function UserMatrix() {
       </div>
 
       <div className="flex gap-2 items-end">
-        <div className="flex-1">
+        <div>
           <label className="text-sm">Имя</label>
           <Input
             value={newUser.name}
             onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Новый участник"
-            className="w-40"
+            className="w-60"
           />
         </div>
         <div className="w-24">

@@ -221,6 +221,44 @@ export function UserMatrix() {
       </div>
 
       <div className="w-full overflow-x-auto">
+        <div className="flex items-center gap-6 mb-4 ml-2">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded border flex items-center justify-center">
+              <svg 
+                className="h-5 w-5 text-black" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                strokeWidth={2}
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  d="M5 13l4 4L19 7" 
+                />
+              </svg>
+            </div>
+            <span className="text-sm">Планирую участвовать</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded border flex items-center justify-center">
+              <svg 
+                className="h-5 w-5 text-green-500" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                strokeWidth={2}
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  d="M5 13l4 4L19 7" 
+                />
+              </svg>
+            </div>
+            <span className="text-sm">Купил слот</span>
+          </div>
+        </div>
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="sticky top-0 bg-background z-10">
@@ -300,18 +338,18 @@ export function UserMatrix() {
                         if (currentState === "none") nextState = "black";
                         else if (currentState === "black") nextState = "green";
                         else if (currentState === "green") nextState = "none";
-                        
+
                         userCategoryMutation.mutate({
                           userId: user.id,
                           categoryId: category.id,
                           selected: nextState,
                         });
                       }}
-                      className="w-5 h-5 rounded border flex items-center justify-center"
+                      className="w-6 h-6 rounded border flex items-center justify-center"
                     >
                       {getUserCategoryState(user.id, category.id) !== "none" && (
                         <svg 
-                          className={`h-4 w-4 ${getUserCategoryState(user.id, category.id) === "green" ? "text-green-500" : "text-black"}`} 
+                          className={`h-5 w-5 ${getUserCategoryState(user.id, category.id) === "green" ? "text-green-500" : "text-black"}`} 
                           fill="none" 
                           viewBox="0 0 24 24" 
                           stroke="currentColor" 

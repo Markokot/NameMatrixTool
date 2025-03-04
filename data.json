@@ -40,7 +40,8 @@
     {
       "name": "Андрей",
       "gender": "male",
-      "id": 1
+      "id": 1,
+      "avatarUrl": "/api/avatars/avatar-1741083744240-246440436.jpg"
     },
     {
       "name": "Аня",
@@ -82,7 +83,7 @@
     {
       "userId": 1,
       "categoryId": 5,
-      "selected": "black",
+      "selected": "none",
       "id": 1
     },
     {

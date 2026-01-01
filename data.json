@@ -90,6 +90,11 @@
       "name": "Миша",
       "gender": "male",
       "id": 9
+    },
+    {
+      "name": "Света",
+      "gender": "male",
+      "id": 10
     }
   ],
   "userCategories": [

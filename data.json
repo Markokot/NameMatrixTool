@@ -1,9 +1,11 @@
 {
   "categories": [
     {
-      "name": "ММ",
+      "name": "Московский Марафон",
       "date": "01.03",
-      "id": 1
+      "id": 1,
+      "logoUrl": "/api/avatars/avatar-1767272843300-280507397.webp",
+      "location": "Москва"
     },
     {
       "name": "МПМ",
@@ -34,6 +36,12 @@
       "name": "Vgr",
       "date": "07.03",
       "id": 7
+    },
+    {
+      "name": "Тестовый забег",
+      "date": "02.01",
+      "location": "Москва",
+      "id": 8
     }
   ],
   "users": [
@@ -43,26 +51,13 @@
       "id": 1,
       "avatarUrl": "/api/avatars/avatar-1741083744240-246440436.jpg"
     },
-    {
-      "name": "Аня",
-      "gender": "female",
-      "id": 2
-    },
-    {
-      "name": "Саша",
-      "gender": "male",
-      "id": 3
-    },
-    {
-      "name": "Вася",
-      "gender": "male",
-      "id": 4
-    },
-    {
-      "name": "Лида",
-      "gender": "female",
-      "id": 6
-    }
+    { "name": "Аня", "gender": "female", "id": 2 },
+    { "name": "Саша", "gender": "male", "id": 3 },
+    { "name": "Вася", "gender": "male", "id": 4 },
+    { "name": "Ира", "gender": "female", "id": 5 },
+    { "name": "Лида", "gender": "female", "id": 6 },
+    { "name": "Женя", "gender": "male", "id": 7 },
+    { "name": "Виталя", "gender": "male", "id": 8 }
   ],
   "userCategories": [
     {
@@ -72,40 +67,16 @@
       "id": 1
     },
     {
-      "userId": 2,
-      "categoryId": 4,
-      "selected": "black",
-      "id": 2
-    },
-    {
-      "userId": 4,
-      "categoryId": 6,
-      "selected": "none",
-      "id": 4
-    },
-    {
-      "userId": 2,
-      "categoryId": 5,
-      "selected": "none",
-      "id": 6
-    },
-    {
-      "userId": 4,
-      "categoryId": 5,
-      "selected": "black",
-      "id": 7
-    },
-    {
-      "userId": 2,
-      "categoryId": 2,
-      "selected": "none",
-      "id": 8
-    },
-    {
       "userId": 1,
       "categoryId": 2,
       "selected": "black",
       "id": 9
+    },
+    {
+      "userId": 1,
+      "categoryId": 1,
+      "selected": "black",
+      "id": 10
     }
   ]
 }

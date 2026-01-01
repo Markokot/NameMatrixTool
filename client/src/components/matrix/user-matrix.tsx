@@ -261,14 +261,14 @@ export function UserMatrix() {
             <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/50 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
-                  <div className="flex gap-4">
+                  <div className="flex gap-6 items-center">
                     <div className="relative group">
-                      <Avatar className="h-16 w-16 border-2 border-muted">
+                      <Avatar className="h-24 w-24 border-2 border-muted shadow-sm">
                         {category.logoUrl ? (
                           <AvatarImage src={category.logoUrl} alt={category.name} />
                         ) : (
                           <AvatarFallback className="bg-muted">
-                            <Trophy className="h-8 w-8 text-muted-foreground" />
+                            <Trophy className="h-10 w-10 text-muted-foreground" />
                           </AvatarFallback>
                         )}
                       </Avatar>
@@ -282,7 +282,7 @@ export function UserMatrix() {
                             if (file) logoMutation.mutate({ categoryId: category.id, file });
                           }}
                         />
-                        <Upload className="h-5 w-5 text-white" />
+                        <Upload className="h-6 w-6 text-white" />
                       </label>
                     </div>
                     <div className="space-y-1">
@@ -290,18 +290,18 @@ export function UserMatrix() {
                         <Calendar className="h-3 w-3" />
                         {category.date} 2026
                       </div>
-                      <CardTitle className="text-xl font-bold flex items-center gap-2">
+                      <CardTitle className="text-2xl font-bold flex items-center gap-2">
                         {category.name}
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-6 w-6"
+                          className="h-6 w-6 text-muted-foreground"
                           onClick={() => setEditingCategory(category)}
                         >
-                          <Plus className="h-3 w-3 rotate-45" /> {/* Use as edit icon */}
+                          <Plus className="h-3 w-3 rotate-45" />
                         </Button>
                       </CardTitle>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <MapPin className="h-3 w-3" />
                         {category.location}
                       </div>
@@ -320,10 +320,10 @@ export function UserMatrix() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex flex-wrap gap-2">
+                <div className="flex justify-start">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-6">
+                      <Button className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-8 h-11">
                         Регистрация
                       </Button>
                     </DialogTrigger>
@@ -421,7 +421,14 @@ export function UserMatrix() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                              onClick={() => confirmDelete('user', user.id)}
+                              onClick={() => {
+                                // Only remove from this specific race
+                                userCategoryMutation.mutate({
+                                  userId: user.id,
+                                  categoryId: category.id,
+                                  selected: "none",
+                                });
+                              }}
                             >
                               <X className="h-3 w-3" />
                             </Button>

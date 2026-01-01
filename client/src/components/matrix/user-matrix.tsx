@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, X, Calendar, MapPin, Users, Settings2 } from "lucide-react";
+import { Plus, X, Calendar, MapPin, Users, Upload, Trophy } from "lucide-react";
 import { type Category, type UserCategory, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { UserAvatar } from "./user-avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,12 +24,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function UserMatrix() {
-  const [newCategory, setNewCategory] = useState({ name: "", date: "" });
+  const [newCategory, setNewCategory] = useState({ name: "", date: "", location: "Москва" });
   const [newUser, setNewUser] = useState({ name: "", gender: "male" });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState<{type: 'user' | 'category', id: number} | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -44,7 +46,7 @@ export function UserMatrix() {
   });
 
   const categoryMutation = useMutation({
-    mutationFn: async (category: { name: string; date: string; id?: number }) => {
+    mutationFn: async (category: { name: string; date: string; location: string; id?: number }) => {
       if (category.id) {
         await apiRequest("PUT", `/api/categories/${category.id}`, category);
       } else {
@@ -53,7 +55,8 @@ export function UserMatrix() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
-      setNewCategory({ name: "", date: "" });
+      setNewCategory({ name: "", date: "", location: "Москва" });
+      setEditingCategory(null);
     },
   });
 
@@ -81,16 +84,6 @@ export function UserMatrix() {
     },
   });
 
-  const deleteUserMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/users/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/user-categories"] });
-    },
-  });
-
   const userCategoryMutation = useMutation({
     mutationFn: async (category: {
       userId: number;
@@ -101,6 +94,22 @@ export function UserMatrix() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/user-categories"] });
+    },
+  });
+
+  const logoMutation = useMutation({
+    mutationFn: async ({ categoryId, file }: { categoryId: number; file: File }) => {
+      const formData = new FormData();
+      formData.append('logo', file);
+      const response = await fetch(`/api/categories/${categoryId}/logo`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error('Ошибка загрузки логотипа');
+      return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
     },
   });
 
@@ -135,7 +144,8 @@ export function UserMatrix() {
   const handleDelete = async () => {
     if (!deleteItem) return;
     if (deleteItem.type === 'user') {
-      deleteUserMutation.mutate(deleteItem.id);
+      await apiRequest("DELETE", `/api/users/${deleteItem.id}`);
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
     } else {
       deleteCategoryMutation.mutate(deleteItem.id);
     }
@@ -173,6 +183,14 @@ export function UserMatrix() {
                   value={newCategory.date}
                   onChange={(e) => setNewCategory(prev => ({ ...prev, date: e.target.value }))}
                   placeholder="01.01"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Локация</label>
+                <Input
+                  value={newCategory.location}
+                  onChange={(e) => setNewCategory(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="Москва"
                 />
               </div>
               <Button 
@@ -235,20 +253,58 @@ export function UserMatrix() {
           const registeredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) !== "none"
           );
+          const nonRegisteredUsers = users.filter(user => 
+            getUserCategoryState(user.id, category.id) === "none"
+          );
 
           return (
             <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/50 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-muted-foreground text-xs uppercase tracking-wider font-semibold">
-                      <Calendar className="h-3 w-3" />
-                      {category.date} 2026
+                  <div className="flex gap-4">
+                    <div className="relative group">
+                      <Avatar className="h-16 w-16 border-2 border-muted">
+                        {category.logoUrl ? (
+                          <AvatarImage src={category.logoUrl} alt={category.name} />
+                        ) : (
+                          <AvatarFallback className="bg-muted">
+                            <Trophy className="h-8 w-8 text-muted-foreground" />
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                      <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-full">
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) logoMutation.mutate({ categoryId: category.id, file });
+                          }}
+                        />
+                        <Upload className="h-5 w-5 text-white" />
+                      </label>
                     </div>
-                    <CardTitle className="text-xl font-bold">{category.name}</CardTitle>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <MapPin className="h-3 w-3" />
-                      г. Москва
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-muted-foreground text-xs uppercase tracking-wider font-semibold">
+                        <Calendar className="h-3 w-3" />
+                        {category.date} 2026
+                      </div>
+                      <CardTitle className="text-xl font-bold flex items-center gap-2">
+                        {category.name}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => setEditingCategory(category)}
+                        >
+                          <Plus className="h-3 w-3 rotate-45" /> {/* Use as edit icon */}
+                        </Button>
+                      </CardTitle>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        {category.location}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -265,34 +321,59 @@ export function UserMatrix() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex flex-wrap gap-2">
-                  <Button 
-                    className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-6"
-                    onClick={() => {
-                      // Logic for self-registration or marking participation
-                      // For now, let's keep it simple: opens a participant list or handles current user logic
-                    }}
-                  >
-                    Регистрация
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-6">
+                        Регистрация
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Зарегистрировать участника</DialogTitle>
+                      </DialogHeader>
+                      <div className="max-h-[400px] overflow-y-auto space-y-2 py-4">
+                        {nonRegisteredUsers.length === 0 ? (
+                          <p className="text-center text-muted-foreground py-4">Все участники зарегистрированы</p>
+                        ) : (
+                          nonRegisteredUsers.map(user => (
+                            <div key={user.id} className="flex items-center justify-between p-2 border rounded-lg">
+                              <div className="flex items-center gap-3">
+                                <UserAvatar name={user.name} gender={user.gender} avatarUrl={user.avatarUrl} />
+                                <span className="text-sm font-medium">{user.name}</span>
+                              </div>
+                              <Button 
+                                size="sm" 
+                                onClick={() => userCategoryMutation.mutate({
+                                  userId: user.id,
+                                  categoryId: category.id,
+                                  selected: "black"
+                                })}
+                              >
+                                Добавить
+                              </Button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
 
                 <div className="pt-2 border-t">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-sm font-semibold flex items-center gap-2">
                       <Users className="h-4 w-4" />
-                      Список участников ({registeredUsers.length})
+                      Список участников {registeredUsers.length}
                     </h4>
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {users.map((user) => {
+                    {registeredUsers.map((user) => {
                       const status = getUserCategoryState(user.id, category.id);
                       return (
                         <div 
                           key={user.id} 
-                          className={`flex items-center justify-between p-2 rounded-lg border transition-colors ${
-                            status !== "none" ? "bg-accent/50 border-primary/20" : "bg-background"
-                          }`}
+                          className="flex items-center justify-between p-2 rounded-lg border bg-accent/50 border-primary/20 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <UserAvatar
@@ -308,8 +389,7 @@ export function UserMatrix() {
                             <button 
                               onClick={() => {
                                 let nextState = "none";
-                                if (status === "none") nextState = "black";
-                                else if (status === "black") nextState = "green";
+                                if (status === "black") nextState = "green";
                                 else if (status === "green") nextState = "none";
 
                                 userCategoryMutation.mutate({
@@ -320,25 +400,22 @@ export function UserMatrix() {
                               }}
                               className={`w-8 h-8 rounded-md border flex items-center justify-center transition-all ${
                                 status === "green" ? "bg-green-100 border-green-500 text-green-600" :
-                                status === "black" ? "bg-primary/10 border-primary text-primary" :
-                                "hover:bg-accent"
+                                "bg-primary/10 border-primary text-primary"
                               }`}
                             >
-                              {status !== "none" && (
-                                <svg 
-                                  className="h-5 w-5" 
-                                  fill="none" 
-                                  viewBox="0 0 24 24" 
-                                  stroke="currentColor" 
-                                  strokeWidth={2}
-                                >
-                                  <path 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round" 
-                                    d="M5 13l4 4L19 7" 
-                                  />
-                                </svg>
-                              )}
+                              <svg 
+                                className="h-5 w-5" 
+                                fill="none" 
+                                viewBox="0 0 24 24" 
+                                stroke="currentColor" 
+                                strokeWidth={2}
+                              >
+                                <path 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  d="M5 13l4 4L19 7" 
+                                />
+                              </svg>
                             </button>
                             <Button
                               variant="ghost"
@@ -359,6 +436,45 @@ export function UserMatrix() {
           );
         })}
       </div>
+
+      <Dialog open={!!editingCategory} onOpenChange={(open) => !open && setEditingCategory(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Редактировать забег</DialogTitle>
+          </DialogHeader>
+          {editingCategory && (
+            <div className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Название</label>
+                <Input
+                  value={editingCategory.name}
+                  onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Дата (дд.мм)</label>
+                <Input
+                  value={editingCategory.date}
+                  onChange={(e) => setEditingCategory({ ...editingCategory, date: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Локация</label>
+                <Input
+                  value={editingCategory.location}
+                  onChange={(e) => setEditingCategory({ ...editingCategory, location: e.target.value })}
+                />
+              </div>
+              <Button 
+                className="w-full" 
+                onClick={() => categoryMutation.mutate(editingCategory)}
+              >
+                Сохранить
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>

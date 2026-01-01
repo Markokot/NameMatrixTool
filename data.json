@@ -59,24 +59,9 @@
       "id": 4
     },
     {
-      "name": "Ира",
-      "gender": "female",
-      "id": 5
-    },
-    {
       "name": "Лида",
       "gender": "female",
       "id": 6
-    },
-    {
-      "name": "Женя",
-      "gender": "male",
-      "id": 7
-    },
-    {
-      "name": "Виталя",
-      "gender": "male",
-      "id": 8
     }
   ],
   "userCategories": [
@@ -93,22 +78,10 @@
       "id": 2
     },
     {
-      "userId": 8,
-      "categoryId": 5,
-      "selected": "black",
-      "id": 3
-    },
-    {
       "userId": 4,
       "categoryId": 6,
       "selected": "none",
       "id": 4
-    },
-    {
-      "userId": 7,
-      "categoryId": 6,
-      "selected": "none",
-      "id": 5
     },
     {
       "userId": 2,
@@ -127,6 +100,12 @@
       "categoryId": 2,
       "selected": "none",
       "id": 8
+    },
+    {
+      "userId": 1,
+      "categoryId": 2,
+      "selected": "black",
+      "id": 9
     }
   ]
 }

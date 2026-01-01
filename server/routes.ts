@@ -127,5 +127,25 @@ export async function registerRoutes(app: Express) {
   // Статический маршрут для директории с аватарами
   app.use('/uploads/avatars', express.static(avatarsDir));
 
+  // Маршрут для загрузки логотипа забега
+  app.post("/api/categories/:id/logo", upload.single('logo'), async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const file = req.file;
+      
+      if (!file) {
+        return res.status(400).json({ message: "Файл не загружен" });
+      }
+      
+      const logoUrl = `/api/avatars/${file.filename}`;
+      await (storage as any).updateCategoryLogo(id, logoUrl);
+      
+      res.json({ success: true, logoUrl });
+    } catch (error) {
+      console.error("Ошибка загрузки логотипа:", error);
+      res.status(500).json({ message: "Ошибка загрузки логотипа" });
+    }
+  });
+
   return createServer(app);
 }

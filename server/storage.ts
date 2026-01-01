@@ -148,6 +148,17 @@ export class MemStorage implements IStorage {
     return updated;
   }
 
+  async updateCategoryLogo(id: number, logoUrl: string): Promise<Category> {
+    const category = this.categories.get(id);
+    if (!category) {
+      throw new Error(`Забег с ID ${id} не найден`);
+    }
+    category.logoUrl = logoUrl;
+    this.categories.set(id, category);
+    this.saveToFile();
+    return category;
+  }
+
   async deleteCategory(id: number): Promise<void> {
     this.categories.delete(id);
     // Remove all user categories associated with this category

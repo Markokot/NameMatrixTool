@@ -13,6 +13,7 @@ export interface IStorage {
   getCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: number, category: InsertCategory): Promise<Category>;
+  updateCategoryLogo(id: number, logoUrl: string): Promise<Category>; // Added
   deleteCategory(id: number): Promise<void>;
   getUsers(): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
@@ -20,7 +21,7 @@ export interface IStorage {
   deleteUser(id: number): Promise<void>;
   getUserCategories(): Promise<UserCategory[]>;
   updateUserCategory(category: InsertUserCategory): Promise<UserCategory>;
-  updateUserAvatar(id: number, avatarUrl: string): Promise<User>; // Added function
+  updateUserAvatar(id: number, avatarUrl: string): Promise<User>;
 }
 
 import fs from 'fs';

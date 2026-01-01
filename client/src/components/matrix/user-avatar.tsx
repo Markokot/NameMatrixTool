@@ -23,10 +23,18 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
   }, [name, gender, avatarUrl, showUpload]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Input change event triggered");
     const file = event.target.files?.[0];
-    if (file && onAvatarChange) {
-      console.log("Файл выбран:", file.name);
-      onAvatarChange(file);
+    if (file) {
+      console.log("File selected:", file.name, "Size:", file.size, "Type:", file.type);
+      if (onAvatarChange) {
+        console.log("Calling onAvatarChange callback");
+        onAvatarChange(file);
+      } else {
+        console.error("onAvatarChange callback is missing");
+      }
+    } else {
+      console.log("No file selected");
     }
     // Reset input value после выбора файла
     event.target.value = '';

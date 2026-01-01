@@ -381,7 +381,10 @@ export function UserMatrix() {
                                 name={user.name}
                                 gender={user.gender}
                                 avatarUrl={user.avatarUrl}
-                                onAvatarChange={(file) => avatarMutation.mutate({ userId: user.id, file })}
+                                onAvatarChange={(file) => {
+                                  console.log("Avatar change triggered for user:", user.id);
+                                  avatarMutation.mutate({ userId: user.id, file });
+                                }}
                                 showUpload={true}
                                 className="h-[50px] w-[50px]"
                               />

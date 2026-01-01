@@ -373,24 +373,28 @@ export function UserMatrix() {
                       return (
                         <div 
                           key={user.id} 
-                          className="flex items-center justify-between p-2 rounded-lg border bg-accent/50 border-primary/20 transition-colors"
+                          className="flex items-center justify-between p-1 rounded-lg border bg-accent/50 border-primary/20 transition-colors h-[52px]"
                         >
-                          <div className="flex items-center gap-3">
-                            <UserAvatar
-                              name={user.name}
-                              gender={user.gender}
-                              avatarUrl={user.avatarUrl}
-                              onAvatarChange={(file) => avatarMutation.mutate({ userId: user.id, file })}
-                              showUpload={true}
-                            />
+                          <div className="flex items-center gap-3 h-full">
+                            <div className="h-full flex items-center">
+                              <UserAvatar
+                                name={user.name}
+                                gender={user.gender}
+                                avatarUrl={user.avatarUrl}
+                                onAvatarChange={(file) => avatarMutation.mutate({ userId: user.id, file })}
+                                showUpload={true}
+                                className="h-10 w-10"
+                              />
+                            </div>
                             <span className="text-sm font-medium">{user.name}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <button 
                               onClick={() => {
                                 let nextState = "none";
-                                if (status === "black") nextState = "green";
-                                else if (status === "green") nextState = "none";
+                                // Toggle between 'none' and 'green' (slot bought)
+                                if (status === "none") nextState = "green";
+                                else nextState = "none";
 
                                 userCategoryMutation.mutate({
                                   userId: user.id,
@@ -398,24 +402,13 @@ export function UserMatrix() {
                                   selected: nextState,
                                 });
                               }}
-                              className={`w-8 h-8 rounded-md border flex items-center justify-center transition-all ${
-                                status === "green" ? "bg-green-100 border-green-500 text-green-600" :
-                                "bg-primary/10 border-primary text-primary"
+                              className={`px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-tight transition-all ${
+                                status === "green" 
+                                  ? "bg-green-100 border-green-500 text-green-700 opacity-100" 
+                                  : "border-muted-foreground/30 text-muted-foreground/30 opacity-40 hover:opacity-60"
                               }`}
                             >
-                              <svg 
-                                className="h-5 w-5" 
-                                fill="none" 
-                                viewBox="0 0 24 24" 
-                                stroke="currentColor" 
-                                strokeWidth={2}
-                              >
-                                <path 
-                                  strokeLinecap="round" 
-                                  strokeLinejoin="round" 
-                                  d="M5 13l4 4L19 7" 
-                                />
-                              </svg>
+                              Слот
                             </button>
                             <Button
                               variant="ghost"

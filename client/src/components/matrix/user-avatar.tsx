@@ -10,9 +10,10 @@ interface UserAvatarProps {
   avatarUrl?: string | null;
   onAvatarChange?: (file: File) => void;
   showUpload?: boolean;
+  className?: string;
 }
 
-export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload = false }: UserAvatarProps) {
+export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload = false, className = "h-7 w-7" }: UserAvatarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const bgColor = gender === "male" ? "bg-blue-100" : "bg-pink-100";
   const iconColor = gender === "male" ? "text-blue-500" : "text-pink-500";
@@ -43,7 +44,7 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
         setIsHovered(false);
       }}
     >
-      <Avatar className="h-7 w-7">
+      <Avatar className={className}>
         {avatarUrl ? (
           <AvatarImage src={avatarUrl} alt={name} />
         ) : (

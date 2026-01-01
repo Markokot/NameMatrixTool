@@ -51,13 +51,46 @@
       "id": 1,
       "avatarUrl": "/api/avatars/avatar-1741083744240-246440436.jpg"
     },
-    { "name": "Аня", "gender": "female", "id": 2 },
-    { "name": "Саша", "gender": "male", "id": 3 },
-    { "name": "Вася", "gender": "male", "id": 4 },
-    { "name": "Ира", "gender": "female", "id": 5 },
-    { "name": "Лида", "gender": "female", "id": 6 },
-    { "name": "Женя", "gender": "male", "id": 7 },
-    { "name": "Виталя", "gender": "male", "id": 8 }
+    {
+      "name": "Аня",
+      "gender": "female",
+      "id": 2
+    },
+    {
+      "name": "Саша",
+      "gender": "male",
+      "id": 3
+    },
+    {
+      "name": "Вася",
+      "gender": "male",
+      "id": 4
+    },
+    {
+      "name": "Ира",
+      "gender": "female",
+      "id": 5
+    },
+    {
+      "name": "Лида",
+      "gender": "female",
+      "id": 6
+    },
+    {
+      "name": "Женя",
+      "gender": "male",
+      "id": 7
+    },
+    {
+      "name": "Виталя",
+      "gender": "male",
+      "id": 8
+    },
+    {
+      "name": "Миша",
+      "gender": "male",
+      "id": 9
+    }
   ],
   "userCategories": [
     {
@@ -77,6 +110,30 @@
       "categoryId": 1,
       "selected": "black",
       "id": 10
+    },
+    {
+      "userId": 2,
+      "categoryId": 8,
+      "selected": "none",
+      "id": 11
+    },
+    {
+      "userId": 8,
+      "categoryId": 8,
+      "selected": "black",
+      "id": 12
+    },
+    {
+      "userId": 6,
+      "categoryId": 8,
+      "selected": "black",
+      "id": 13
+    },
+    {
+      "userId": 1,
+      "categoryId": 8,
+      "selected": "none",
+      "id": 14
     }
   ]
 }

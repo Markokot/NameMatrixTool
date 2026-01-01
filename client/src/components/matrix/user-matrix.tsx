@@ -257,7 +257,6 @@ export function UserMatrix() {
             getUserCategoryState(user.id, category.id) === "none"
           );
 
-<<<<<<< HEAD
           return (
             <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/50 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
@@ -306,76 +305,6 @@ export function UserMatrix() {
                         <MapPin className="h-3 w-3" />
                         {category.location}
                       </div>
-=======
-      <div className="w-full mb-4">
-        <div className="flex items-center gap-6 ml-2">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded border flex items-center justify-center">
-              <svg 
-                className="h-5 w-5 text-black" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor" 
-                strokeWidth={2}
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  d="M5 13l4 4L19 7" 
-                />
-              </svg>
-            </div>
-            <span className="text-sm">Планирую участвовать</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded border flex items-center justify-center">
-              <svg 
-                className="h-5 w-5 text-green-500" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor" 
-                strokeWidth={2}
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  d="M5 13l4 4L19 7" 
-                />
-              </svg>
-            </div>
-            <span className="text-sm">Купил слот</span>
-          </div>
-        </div>
-      </div>
-      <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[640px] text-sm">
-          <thead>
-            <tr className="sticky top-0 bg-background z-10">
-              <th className="p-4 text-left font-medium sticky left-0 z-10 bg-background">Имя</th>
-              {categories.map((category) => (
-                <th key={category.id} className="p-2">
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <Input
-                        value={category.name}
-                        onChange={(e) =>
-                          categoryMutation.mutate({
-                            id: category.id,
-                            name: e.target.value,
-                            date: category.date,
-                          })
-                        }
-                        className="text-left font-medium w-24"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="ml-2 text-red-500 hover:text-red-700 hover:bg-red-100"
-                        onClick={() => confirmDelete('category', category.id)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
->>>>>>> ac9400b9984e7eed71eac4362dab42db543b352e
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

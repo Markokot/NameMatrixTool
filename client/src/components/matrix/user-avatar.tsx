@@ -54,7 +54,11 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
     >
       <Avatar className={className}>
         {avatarUrl ? (
-          <AvatarImage src={avatarUrl} alt={name} className="object-cover" />
+          <AvatarImage 
+            src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
+            alt={name} 
+            className="object-cover" 
+          />
         ) : (
           <AvatarFallback className={bgColor}>
             <UserCircle2 className={`h-1/2 w-1/2 ${iconColor}`} />

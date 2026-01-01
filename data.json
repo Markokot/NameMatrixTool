@@ -75,7 +75,8 @@
     {
       "name": "Лида",
       "gender": "female",
-      "id": 6
+      "id": 6,
+      "avatarUrl": "/api/avatars/avatar-1767297617401-951684261.png"
     },
     {
       "name": "Женя",

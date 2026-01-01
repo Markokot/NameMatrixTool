@@ -125,7 +125,9 @@ export function UserMatrix() {
       return await response.json();
     },
     onSuccess: () => {
+      // Invalidate both users and categories to be sure
       queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
     },
   });
 

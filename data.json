@@ -120,20 +120,32 @@
     {
       "userId": 8,
       "categoryId": 8,
-      "selected": "black",
+      "selected": "none",
       "id": 12
     },
     {
       "userId": 6,
       "categoryId": 8,
-      "selected": "black",
+      "selected": "green",
       "id": 13
     },
     {
       "userId": 1,
       "categoryId": 8,
-      "selected": "none",
+      "selected": "black",
       "id": 14
+    },
+    {
+      "userId": 9,
+      "categoryId": 8,
+      "selected": "black",
+      "id": 15
+    },
+    {
+      "userId": 3,
+      "categoryId": 8,
+      "selected": "green",
+      "id": 16
     }
   ]
 }

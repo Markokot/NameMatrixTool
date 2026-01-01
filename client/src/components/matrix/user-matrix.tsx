@@ -373,28 +373,28 @@ export function UserMatrix() {
                       return (
                         <div 
                           key={user.id} 
-                          className="flex items-center justify-between p-1 rounded-lg border bg-accent/50 border-primary/20 transition-colors h-[52px]"
+                          className="flex items-center justify-between p-0.5 rounded-lg border bg-accent/50 border-primary/20 transition-colors h-[52px]"
                         >
-                          <div className="flex items-center gap-3 h-full">
-                            <div className="h-full flex items-center">
+                          <div className="flex items-center gap-2 h-full">
+                            <div className="h-full flex items-center pl-0.5">
                               <UserAvatar
                                 name={user.name}
                                 gender={user.gender}
                                 avatarUrl={user.avatarUrl}
                                 onAvatarChange={(file) => avatarMutation.mutate({ userId: user.id, file })}
                                 showUpload={true}
-                                className="h-10 w-10"
+                                className="h-[50px] w-[50px]"
                               />
                             </div>
-                            <span className="text-sm font-medium">{user.name}</span>
+                            <span className="text-sm font-medium leading-none">{user.name}</span>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pr-1">
                             <button 
                               onClick={() => {
                                 let nextState = "none";
-                                // Toggle between 'none' and 'green' (slot bought)
-                                if (status === "none") nextState = "green";
-                                else nextState = "none";
+                                // Toggle between 'black' (standard) and 'green' (slot bought)
+                                if (status === "green") nextState = "black";
+                                else nextState = "green";
 
                                 userCategoryMutation.mutate({
                                   userId: user.id,

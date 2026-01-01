@@ -376,7 +376,7 @@ export function UserMatrix() {
                           className="flex items-center justify-between p-0.5 rounded-lg border bg-accent/50 border-primary/20 transition-colors h-[52px]"
                         >
                           <div className="flex items-center gap-2 h-full">
-                            <div className="h-full flex items-center pl-0.5">
+                            <div className="h-full flex items-center pl-0.5 pointer-events-auto">
                               <UserAvatar
                                 name={user.name}
                                 gender={user.gender}

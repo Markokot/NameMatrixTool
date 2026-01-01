@@ -42,7 +42,7 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
 
   return (
     <div 
-      className="relative group" 
+      className="relative group cursor-pointer" 
       onMouseEnter={() => {
         console.log("Mouse enter");
         setIsHovered(true);
@@ -54,26 +54,30 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
     >
       <Avatar className={className}>
         {avatarUrl ? (
-          <AvatarImage src={avatarUrl} alt={name} />
+          <AvatarImage src={avatarUrl} alt={name} className="object-cover" />
         ) : (
           <AvatarFallback className={bgColor}>
-            <UserCircle2 className={`h-3 w-3 ${iconColor}`} />
+            <UserCircle2 className={`h-1/2 w-1/2 ${iconColor}`} />
           </AvatarFallback>
         )}
       </Avatar>
 
-      {showUpload && isHovered && (
-        <label className="cursor-pointer absolute inset-0 flex items-center justify-center z-10">
+      {showUpload && (
+        <>
           <input
             type="file"
+            id={`avatar-upload-${name}`}
             className="hidden"
             accept="image/*"
             onChange={handleFileChange}
           />
-          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-            <Upload className="h-3 w-3 text-white" />
-          </div>
-        </label>
+          <label 
+            htmlFor={`avatar-upload-${name}`}
+            className="absolute inset-0 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 z-20 cursor-pointer"
+          >
+            <Upload className="h-1/2 w-1/2 text-white" />
+          </label>
+        </>
       )}
     </div>
   );

@@ -13,3 +13,5 @@ node_modules/
 # Deploy logs
 deploy.log
 
+uploads/
+data.json

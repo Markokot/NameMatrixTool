@@ -55,7 +55,8 @@
     {
       "name": "Аня",
       "gender": "female",
-      "id": 2
+      "id": 2,
+      "avatarUrl": "/api/avatars/avatar-1767298325993-940918888.jpeg"
     },
     {
       "name": "Саша",
@@ -96,7 +97,8 @@
     {
       "name": "Света",
       "gender": "male",
-      "id": 10
+      "id": 10,
+      "avatarUrl": "/api/avatars/avatar-1767297790348-102638742.jpeg"
     }
   ],
   "userCategories": [
@@ -171,6 +173,12 @@
       "categoryId": 3,
       "selected": "green",
       "id": 19
+    },
+    {
+      "userId": 10,
+      "categoryId": 8,
+      "selected": "black",
+      "id": 20
     }
   ]
 }

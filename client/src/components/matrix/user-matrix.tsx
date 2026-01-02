@@ -265,16 +265,18 @@ export function UserMatrix() {
                 <div className="flex justify-between items-start">
                   <div className="flex gap-6 items-center">
                     <div className="relative group">
-                      <Avatar className="h-24 w-24 border-2 border-muted shadow-sm">
+                      <div className="h-24 w-36 border-2 border-muted shadow-sm rounded-md overflow-hidden bg-muted flex items-center justify-center">
                         {category.logoUrl ? (
-                          <AvatarImage src={category.logoUrl} alt={category.name} />
+                          <img 
+                            src={`${category.logoUrl}${category.logoUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
+                            alt={category.name} 
+                            className="h-full w-full object-cover"
+                          />
                         ) : (
-                          <AvatarFallback className="bg-muted">
-                            <Trophy className="h-10 w-10 text-muted-foreground" />
-                          </AvatarFallback>
+                          <Trophy className="h-10 w-10 text-muted-foreground" />
                         )}
-                      </Avatar>
-                      <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-full">
+                      </div>
+                      <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-md">
                         <input
                           type="file"
                           className="hidden"

@@ -37,13 +37,29 @@ export class MemStorage implements IStorage {
   private dataFile: string;
 
   constructor() {
-    this.dataFile = path.join(process.cwd(), 'data.json');
+    this.dataFile = "/tmp/running-events/data.json";
     this.categories = new Map();
     this.users = new Map();
     this.userCategories = new Map();
     this.currentCategoryId = 1;
     this.currentUserId = 1;
     this.currentUserCategoryId = 1;
+
+    // Ensure directory exists
+    const dir = path.dirname(this.dataFile);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    // Try to migrate old data if exists
+    const oldDataFile = path.join(process.cwd(), 'data.json');
+    if (!fs.existsSync(this.dataFile) && fs.existsSync(oldDataFile)) {
+      try {
+        fs.copyFileSync(oldDataFile, this.dataFile);
+      } catch (e) {
+        console.error("Migration failed", e);
+      }
+    }
 
     // Try to load data from file
     this.loadFromFile();

@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Настройка multer для загрузки аватаров
-const avatarsDir = path.resolve(dirname(__filename), "..", "uploads", "avatars");
+const avatarsDir = path.resolve("/tmp/running-events/avatars");
 if (!fs.existsSync(avatarsDir)) {
   fs.mkdirSync(avatarsDir, { recursive: true });
 }

@@ -7,4 +7,9 @@ vite.config.ts.*
 data.json
 uploads/
 node_modules/
+# Temporary swap files
+*.swp
+
+# Deploy logs
+deploy.log
 

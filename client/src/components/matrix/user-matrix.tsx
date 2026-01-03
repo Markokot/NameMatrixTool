@@ -290,8 +290,8 @@ export function UserMatrix() {
                       </label>
                     </div>
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-muted-foreground text-xs uppercase tracking-wider font-semibold">
-                        <Calendar className="h-3 w-3" />
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider font-semibold">
+                        <Calendar className="h-4 w-4" />
                         {category.date} 2026
                       </div>
                       <CardTitle className="text-2xl font-bold flex items-center gap-2">
@@ -343,7 +343,7 @@ export function UserMatrix() {
                             <div key={user.id} className="flex items-center justify-between p-2 border rounded-lg">
                               <div className="flex items-center gap-3">
                                 <UserAvatar name={user.name} gender={user.gender} avatarUrl={user.avatarUrl} />
-                                <span className="text-sm font-medium">{user.name}</span>
+                                <span className="text-base font-medium">{user.name}</span>
                               </div>
                               <Button 
                                 size="sm" 
@@ -393,7 +393,7 @@ export function UserMatrix() {
                                 className="h-[50px] w-[50px]"
                               />
                             </div>
-                            <span className="text-sm font-medium leading-none">{user.name}</span>
+                            <span className="text-base font-medium leading-none">{user.name}</span>
                           </div>
                           <div className="flex items-center gap-1 pr-1">
                             <button 

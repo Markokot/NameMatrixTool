@@ -217,55 +217,54 @@ export function UserMatrix() {
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Добавить участника
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Новый участник</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Имя</label>
-                <Input
-                  value={newUser.name}
-                  onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Иван Иванов"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Пол</label>
-                <select
-                  className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
-                  value={newUser.gender}
-                  onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
-                >
-                  <option value="male">Мужской</option>
-                  <option value="female">Женский</option>
-                </select>
-              </div>
-              <Button 
-                className="w-full" 
-                onClick={() => userMutation.mutate(newUser)}
-                disabled={!newUser.name}
-              >
-                Добавить
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
               <Users className="h-4 w-4 mr-2" />
               Участники
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
+            <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <DialogTitle>Список всех участников</DialogTitle>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Добавить участника
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Новый участник</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Имя</label>
+                      <Input
+                        value={newUser.name}
+                        onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Иван Иванов"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Пол</label>
+                      <select
+                        className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
+                        value={newUser.gender}
+                        onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
+                      >
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
+                      </select>
+                    </div>
+                    <Button 
+                      className="w-full" 
+                      onClick={() => userMutation.mutate(newUser)}
+                      disabled={!newUser.name}
+                    >
+                      Добавить
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </DialogHeader>
             <div className="space-y-6 pt-4">
               {users.map((user) => {

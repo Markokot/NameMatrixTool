@@ -255,6 +255,61 @@ export function UserMatrix() {
             </div>
           </DialogContent>
         </Dialog>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Users className="h-4 w-4 mr-2" />
+              Участники
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Список всех участников</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 pt-4">
+              {users.map((user) => {
+                const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
+                
+                return (
+                  <div key={user.id} className="flex gap-4 p-4 rounded-lg border bg-accent/30">
+                    <UserAvatar 
+                      name={user.name} 
+                      gender={user.gender} 
+                      avatarUrl={user.avatarUrl} 
+                      className="h-20 w-20 flex-shrink-0"
+                    />
+                    <div className="flex-1 space-y-2">
+                      <h3 className="text-xl font-bold">{user.name}</h3>
+                      <div className="space-y-1">
+                        {userRegistrations.length === 0 ? (
+                          <p className="text-sm text-muted-foreground italic">Нет регистраций на забеги</p>
+                        ) : (
+                          userRegistrations.map((reg) => {
+                            const race = categories.find(c => c.id === reg.categoryId);
+                            if (!race) return null;
+                            
+                            return (
+                              <div key={race.id} className="flex items-center gap-2 text-sm">
+                                <span className="font-medium">{race.name}</span>
+                                <span className="text-muted-foreground">({race.date})</span>
+                                {reg.selected === "green" && (
+                                  <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold uppercase">
+                                    Слот куплен
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Race Blocks */}

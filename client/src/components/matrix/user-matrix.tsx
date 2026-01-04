@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, X, Calendar, MapPin, Users, Upload, Trophy } from "lucide-react";
+import { Plus, X, Calendar, MapPin, Users, Upload, Trophy, Edit2, ExternalLink } from "lucide-react";
 import { type Category, type UserCategory, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { UserAvatar } from "./user-avatar";
@@ -27,7 +27,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function UserMatrix() {
-  const [newCategory, setNewCategory] = useState({ name: "", date: "", location: "Москва" });
+  const [newCategory, setNewCategory] = useState({ name: "", date: "", location: "Москва", url: "" });
   const [newUser, setNewUser] = useState({ name: "", gender: "male" });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState<{type: 'user' | 'category', id: number} | null>(null);
@@ -46,7 +46,7 @@ export function UserMatrix() {
   });
 
   const categoryMutation = useMutation({
-    mutationFn: async (category: { name: string; date: string; location: string; id?: number }) => {
+    mutationFn: async (category: { name: string; date: string; location: string; url?: string | null; id?: number }) => {
       if (category.id) {
         await apiRequest("PUT", `/api/categories/${category.id}`, category);
       } else {
@@ -55,7 +55,7 @@ export function UserMatrix() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
-      setNewCategory({ name: "", date: "", location: "Москва" });
+      setNewCategory({ name: "", date: "", location: "Москва", url: "" });
       setEditingCategory(null);
     },
   });
@@ -195,6 +195,14 @@ export function UserMatrix() {
                   placeholder="Москва"
                 />
               </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Ссылка на страницу старта</label>
+                <Input
+                  value={newCategory.url}
+                  onChange={(e) => setNewCategory(prev => ({ ...prev, url: e.target.value }))}
+                  placeholder="https://..."
+                />
+              </div>
               <Button 
                 className="w-full" 
                 onClick={() => categoryMutation.mutate(newCategory)}
@@ -295,14 +303,26 @@ export function UserMatrix() {
                         {category.date} 2026
                       </div>
                       <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                        {category.name}
+                        {category.url ? (
+                          <a 
+                            href={category.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="hover:text-primary transition-colors flex items-center gap-2"
+                          >
+                            {category.name}
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        ) : (
+                          category.name
+                        )}
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-6 w-6 text-muted-foreground"
                           onClick={() => setEditingCategory(category)}
                         >
-                          <Plus className="h-3 w-3 rotate-45" />
+                          <Edit2 className="h-3 w-3" />
                         </Button>
                       </CardTitle>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -470,6 +490,14 @@ export function UserMatrix() {
                 <Input
                   value={editingCategory.location}
                   onChange={(e) => setEditingCategory({ ...editingCategory, location: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Ссылка на страницу старта</label>
+                <Input
+                  value={editingCategory.url || ""}
+                  onChange={(e) => setEditingCategory({ ...editingCategory, url: e.target.value })}
+                  placeholder="https://..."
                 />
               </div>
               <Button 

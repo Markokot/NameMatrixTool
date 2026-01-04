@@ -8,6 +8,7 @@ export const categories = pgTable("categories", {
   date: text("date").notNull(),
   location: text("location").notNull().default("Москва"),
   logoUrl: text("logo_url"),
+  url: text("url"),
 });
 
 export const users = pgTable("users", {
@@ -29,6 +30,7 @@ export const insertCategorySchema = createInsertSchema(categories).pick({
   date: true,
   location: true,
   logoUrl: true,
+  url: true,
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({

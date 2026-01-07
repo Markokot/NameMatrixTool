@@ -158,10 +158,11 @@ export function UserMatrix() {
   return (
     <div className="space-y-6">
       {/* Admin Controls */}
-      <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border">
+      <Card>
+        <CardContent className="flex flex-wrap gap-3 p-4">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-[160px]">
+            <Button variant="outline">
               <Plus className="h-4 w-4 mr-2" />
               Добавить забег
             </Button>
@@ -216,7 +217,7 @@ export function UserMatrix() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-[160px]">
+            <Button variant="outline">
               <Users className="h-4 w-4 mr-2" />
               Участники
             </Button>
@@ -309,7 +310,8 @@ export function UserMatrix() {
             </div>
           </DialogContent>
         </Dialog>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Race Blocks */}
       <div className="space-y-4">

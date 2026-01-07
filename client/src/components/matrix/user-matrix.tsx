@@ -7,7 +7,6 @@ import { UserAvatar } from "./user-avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getGradientForRace, getChipGradientClass } from "@/lib/gradients";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -159,7 +158,7 @@ export function UserMatrix() {
   return (
     <div className="space-y-6">
       {/* Admin Controls */}
-      <div className="flex flex-wrap gap-4 p-5 bg-card rounded-xl border shadow-sm">
+      <div className="flex flex-wrap gap-3 p-4 bg-card rounded-lg border">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="w-[160px]">
@@ -248,7 +247,7 @@ export function UserMatrix() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Пол</label>
                       <select
-                        className="w-full h-10 px-3 py-2 rounded-lg border border-input bg-background text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                        className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
                         value={newUser.gender}
                         onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
                       >
@@ -272,7 +271,7 @@ export function UserMatrix() {
                 const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
                 
                 return (
-                  <div key={user.id} className="flex gap-4 p-4 rounded-xl border bg-card shadow-sm">
+                  <div key={user.id} className="flex gap-4 p-4 rounded-lg border bg-card">
                     <UserAvatar 
                       name={user.name} 
                       gender={user.gender} 
@@ -314,58 +313,56 @@ export function UserMatrix() {
 
       {/* Race Blocks */}
       <div className="space-y-4">
-        {categories.map((category, index) => {
+        {categories.map((category) => {
           const registeredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) !== "none"
           );
           const nonRegisteredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) === "none"
           );
-          const gradient = getGradientForRace(index);
 
           return (
-            <Card key={category.id} className="overflow-hidden shadow-md">
-              <div className="relative" style={{ background: gradient.background }}>
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <div className="flex gap-6 items-center">
-                      <div className="relative group">
-                        <div className="h-24 w-36 border-2 border-white/30 shadow-lg rounded-xl overflow-hidden bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                          {category.logoUrl ? (
-                            <img 
-                              src={`${category.logoUrl}${category.logoUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
-                              alt={category.name} 
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <Trophy className="h-10 w-10 text-white/80" />
-                          )}
-                        </div>
-                        <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-md">
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) logoMutation.mutate({ categoryId: category.id, file });
-                            }}
+            <Card key={category.id}>
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex gap-4 items-center">
+                    <div className="relative group">
+                      <div className="h-20 w-28 border rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+                        {category.logoUrl ? (
+                          <img 
+                            src={`${category.logoUrl}${category.logoUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
+                            alt={category.name} 
+                            className="h-full w-full object-cover"
                           />
-                          <Upload className="h-6 w-6 text-white" />
-                        </label>
+                        ) : (
+                          <Trophy className="h-8 w-8 text-muted-foreground" />
+                        )}
                       </div>
+                      <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-lg">
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) logoMutation.mutate({ categoryId: category.id, file });
+                          }}
+                        />
+                        <Upload className="h-5 w-5 text-white" />
+                      </label>
+                    </div>
                     <div className="space-y-1">
-                      <div className={`flex items-center gap-2 text-sm uppercase tracking-wider font-semibold ${gradient.textColor} opacity-90`}>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
                         {category.date} 2026
                       </div>
-                      <CardTitle className={`text-2xl font-bold flex items-center gap-2 ${gradient.textColor}`}>
+                      <CardTitle className="flex items-center gap-2">
                         {category.url ? (
                           <a 
                             href={category.url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="hover:opacity-80 transition-opacity flex items-center gap-2"
+                            className="hover:text-primary transition-colors flex items-center gap-2"
                           >
                             {category.name}
                             <ExternalLink className="h-4 w-4" />
@@ -376,36 +373,31 @@ export function UserMatrix() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className={gradient.textColor}
                           onClick={() => setEditingCategory(category)}
                         >
-                          <Edit2 className="h-3 w-3" />
+                          <Edit2 className="h-4 w-4" />
                         </Button>
                       </CardTitle>
-                      <div className={`flex items-center gap-1 text-sm ${gradient.textColor} opacity-80`}>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <MapPin className="h-3 w-3" />
                         {category.location}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={gradient.textColor}
-                      onClick={() => confirmDelete('category', category.id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => confirmDelete('category', category.id)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
               </CardHeader>
-              </div>
-              <CardContent className="space-y-4 pt-4">
+              <CardContent className="space-y-4">
                 <div className="flex justify-start">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button className="rounded-full px-8">
+                      <Button>
                         Регистрация
                       </Button>
                     </DialogTrigger>
@@ -418,7 +410,7 @@ export function UserMatrix() {
                           <p className="text-center text-muted-foreground py-4">Все участники зарегистрированы</p>
                         ) : (
                           nonRegisteredUsers.map(user => (
-                            <div key={user.id} className="flex items-center justify-between p-2 border rounded-lg bg-accent/30">
+                            <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg bg-muted">
                               <div className="flex items-center gap-3">
                                 <UserAvatar name={user.name} gender={user.gender} avatarUrl={user.avatarUrl} />
                                 <span className="text-base font-medium">{user.name}</span>
@@ -449,31 +441,28 @@ export function UserMatrix() {
                     </h4>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {registeredUsers.map((user, userIndex) => {
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    {registeredUsers.map((user) => {
                       const status = getUserCategoryState(user.id, category.id);
-                      const chipGradient = getChipGradientClass(userIndex);
                       return (
                         <div 
                           key={user.id} 
-                          className={`participant-chip flex items-center justify-between p-1 h-[52px] ${chipGradient}`}
+                          className="participant-chip flex items-center justify-between"
                         >
-                          <div className="flex items-center gap-2 h-full">
-                            <div className="h-full flex items-center pl-0.5 pointer-events-auto">
-                              <UserAvatar
-                                name={user.name}
-                                gender={user.gender}
-                                avatarUrl={user.avatarUrl}
-                                onAvatarChange={(file) => {
-                                  avatarMutation.mutate({ userId: user.id, file });
-                                }}
-                                showUpload={true}
-                                className="h-[44px] w-[44px]"
-                              />
-                            </div>
-                            <span className="text-sm font-semibold leading-none">{user.name}</span>
+                          <div className="flex items-center gap-2">
+                            <UserAvatar
+                              name={user.name}
+                              gender={user.gender}
+                              avatarUrl={user.avatarUrl}
+                              onAvatarChange={(file) => {
+                                avatarMutation.mutate({ userId: user.id, file });
+                              }}
+                              showUpload={true}
+                              className="h-8 w-8"
+                            />
+                            <span className="text-sm font-medium">{user.name}</span>
                           </div>
-                          <div className="flex items-center gap-1 pr-1">
+                          <div className="flex items-center gap-1">
                             <button 
                               onClick={() => {
                                 let nextState = "none";
@@ -486,10 +475,10 @@ export function UserMatrix() {
                                   selected: nextState,
                                 });
                               }}
-                              className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight transition-all duration-200 ${
+                              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                                 status === "green" 
-                                  ? "bg-white/90 text-green-700 shadow-sm" 
-                                  : "bg-black/20 text-current opacity-60 hover:opacity-80"
+                                  ? "bg-primary text-primary-foreground" 
+                                  : "bg-muted text-muted-foreground hover:bg-accent"
                               }`}
                             >
                               Слот
@@ -505,7 +494,7 @@ export function UserMatrix() {
                                 });
                               }}
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>

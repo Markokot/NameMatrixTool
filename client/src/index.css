@@ -36,75 +36,13 @@
 }
 
 @layer components {
-  .gradient-coral {
-    background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
-  }
-  
-  .gradient-azure {
-    background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);
-  }
-  
-  .gradient-citrus {
-    background: linear-gradient(135deg, #F093FB 0%, #F5576C 100%);
-  }
-  
-  .gradient-flamingo {
-    background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
-  }
-  
-  .gradient-lagoon {
-    background: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
-  }
-  
-  .gradient-royal {
-    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-  }
-
-  .gradient-sunset {
-    background: linear-gradient(135deg, #F97316 0%, #FBBF24 100%);
-  }
-
-  .gradient-ocean {
-    background: linear-gradient(135deg, #0EA5E9 0%, #06B6D4 100%);
-  }
-
-  .chip-gradient-1 {
-    background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
-    color: #1a1a1a;
-  }
-  
-  .chip-gradient-2 {
-    background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);
-    color: #1a1a1a;
-  }
-  
-  .chip-gradient-3 {
-    background: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
-    color: #1a1a1a;
-  }
-  
-  .chip-gradient-4 {
-    background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);
-    color: #1a1a1a;
-  }
-  
-  .chip-gradient-5 {
-    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-    color: white;
-  }
-  
-  .chip-gradient-6 {
-    background: linear-gradient(135deg, #F093FB 0%, #F5576C 100%);
-    color: white;
-  }
-
   .participant-chip {
-    @apply rounded-full px-3 py-1 text-sm font-medium;
-    @apply transition-opacity duration-200;
+    @apply rounded-lg px-3 py-2 text-sm font-medium bg-muted border border-border;
+    @apply transition-colors duration-200;
   }
 
   .participant-chip:hover {
-    opacity: 0.9;
+    @apply bg-accent;
   }
 }
 

@@ -293,7 +293,7 @@ export function UserMatrix() {
                                 <span className="font-medium">{race.name}</span>
                                 <span className="text-muted-foreground">({race.date})</span>
                                 {reg.selected === "green" && (
-                                  <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold uppercase">
+                                  <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-[#10b981] text-[10px] font-bold uppercase">
                                     Слот куплен
                                   </span>
                                 )}
@@ -322,7 +322,7 @@ export function UserMatrix() {
           );
 
           return (
-            <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/50 shadow-sm hover:shadow-md transition-shadow">
+            <Card key={category.id} className="overflow-hidden border-l-4 border-l-[#10b981] shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex gap-6 items-center">
@@ -401,7 +401,7 @@ export function UserMatrix() {
                 <div className="flex justify-start">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-8 h-11">
+                      <Button className="bg-[#10b981] hover:bg-[#059669] text-white font-semibold rounded-full px-8 h-11">
                         Регистрация
                       </Button>
                     </DialogTrigger>
@@ -485,7 +485,7 @@ export function UserMatrix() {
                               }}
                               className={`px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-tight transition-all ${
                                 status === "green" 
-                                  ? "bg-green-100 border-green-500 text-green-700 opacity-100" 
+                                  ? "bg-emerald-100 border-[#10b981] text-[#10b981] opacity-100" 
                                   : "border-muted-foreground/30 text-muted-foreground/30 opacity-40 hover:opacity-60"
                               }`}
                             >

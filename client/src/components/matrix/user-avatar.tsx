@@ -15,9 +15,8 @@ interface UserAvatarProps {
 
 export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload = false, className = "h-7 w-7" }: UserAvatarProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const bgColor = gender === "male" ? "bg-blue-500/20" : "bg-pink-500/20";
-  const iconColor = gender === "male" ? "text-blue-400" : "text-pink-400";
-  const ringColor = gender === "male" ? "ring-blue-500/30" : "ring-pink-500/30";
+  const bgColor = gender === "male" ? "bg-blue-100" : "bg-pink-100";
+  const iconColor = gender === "male" ? "text-blue-500" : "text-pink-500";
 
   useEffect(() => {
     console.log("UserAvatar реднерится с параметрами:", { name, gender, avatarUrl, showUpload });
@@ -53,7 +52,7 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
         setIsHovered(false);
       }}
     >
-      <Avatar className={`${className} ring-2 ${ringColor} transition-all duration-200 group-hover:ring-primary/50`} style={{ boxShadow: isHovered ? '0 0 15px rgba(132, 204, 22, 0.3)' : 'none' }}>
+      <Avatar className={className}>
         {avatarUrl ? (
           <AvatarImage 
             src={`${avatarUrl}${avatarUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
@@ -61,7 +60,7 @@ export function UserAvatar({ name, gender, avatarUrl, onAvatarChange, showUpload
             className="object-cover" 
           />
         ) : (
-          <AvatarFallback className={`${bgColor} backdrop-blur-md`}>
+          <AvatarFallback className={bgColor}>
             <UserCircle2 className={`h-1/2 w-1/2 ${iconColor}`} />
           </AvatarFallback>
         )}

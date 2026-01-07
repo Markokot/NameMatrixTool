@@ -158,11 +158,10 @@ export function UserMatrix() {
   return (
     <div className="space-y-6">
       {/* Admin Controls */}
-      <Card>
-        <CardContent className="flex flex-wrap gap-3 p-4">
+      <div className="flex flex-wrap gap-4 p-4 bg-muted/30 rounded-lg border">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" size="sm" className="w-[160px]">
               <Plus className="h-4 w-4 mr-2" />
               Добавить забег
             </Button>
@@ -217,7 +216,7 @@ export function UserMatrix() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" size="sm" className="w-[160px]">
               <Users className="h-4 w-4 mr-2" />
               Участники
             </Button>
@@ -248,7 +247,7 @@ export function UserMatrix() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Пол</label>
                       <select
-                        className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+                        className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
                         value={newUser.gender}
                         onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
                       >
@@ -272,7 +271,7 @@ export function UserMatrix() {
                 const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
                 
                 return (
-                  <div key={user.id} className="flex gap-4 p-4 rounded-lg border bg-card">
+                  <div key={user.id} className="flex gap-4 p-4 rounded-lg border bg-accent/30">
                     <UserAvatar 
                       name={user.name} 
                       gender={user.gender} 
@@ -310,8 +309,7 @@ export function UserMatrix() {
             </div>
           </DialogContent>
         </Dialog>
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Race Blocks */}
       <div className="space-y-4">
@@ -324,12 +322,12 @@ export function UserMatrix() {
           );
 
           return (
-            <Card key={category.id}>
+            <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/50 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="flex justify-between items-start gap-4">
-                  <div className="flex gap-4 items-center">
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-6 items-center">
                     <div className="relative group">
-                      <div className="h-20 w-28 border rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+                      <div className="h-24 w-36 border-2 border-muted shadow-sm rounded-md overflow-hidden bg-muted flex items-center justify-center">
                         {category.logoUrl ? (
                           <img 
                             src={`${category.logoUrl}${category.logoUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
@@ -337,10 +335,10 @@ export function UserMatrix() {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <Trophy className="h-8 w-8 text-muted-foreground" />
+                          <Trophy className="h-10 w-10 text-muted-foreground" />
                         )}
                       </div>
-                      <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-lg">
+                      <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-md">
                         <input
                           type="file"
                           className="hidden"
@@ -350,15 +348,15 @@ export function UserMatrix() {
                             if (file) logoMutation.mutate({ categoryId: category.id, file });
                           }}
                         />
-                        <Upload className="h-5 w-5 text-white" />
+                        <Upload className="h-6 w-6 text-white" />
                       </label>
                     </div>
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider font-semibold">
                         <Calendar className="h-4 w-4" />
                         {category.date} 2026
                       </div>
-                      <CardTitle className="flex items-center gap-2">
+                      <CardTitle className="text-2xl font-bold flex items-center gap-2">
                         {category.url ? (
                           <a 
                             href={category.url} 
@@ -375,9 +373,10 @@ export function UserMatrix() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          className="h-6 w-6 text-muted-foreground"
                           onClick={() => setEditingCategory(category)}
                         >
-                          <Edit2 className="h-4 w-4" />
+                          <Edit2 className="h-3 w-3" />
                         </Button>
                       </CardTitle>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -386,20 +385,23 @@ export function UserMatrix() {
                       </div>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => confirmDelete('category', category.id)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => confirmDelete('category', category.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-start">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button>
+                      <Button className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-8 h-11">
                         Регистрация
                       </Button>
                     </DialogTrigger>
@@ -412,7 +414,7 @@ export function UserMatrix() {
                           <p className="text-center text-muted-foreground py-4">Все участники зарегистрированы</p>
                         ) : (
                           nonRegisteredUsers.map(user => (
-                            <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg bg-muted">
+                            <div key={user.id} className="flex items-center justify-between p-2 border rounded-lg">
                               <div className="flex items-center gap-3">
                                 <UserAvatar name={user.name} gender={user.gender} avatarUrl={user.avatarUrl} />
                                 <span className="text-base font-medium">{user.name}</span>
@@ -443,31 +445,35 @@ export function UserMatrix() {
                     </h4>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     {registeredUsers.map((user) => {
                       const status = getUserCategoryState(user.id, category.id);
                       return (
                         <div 
                           key={user.id} 
-                          className="participant-chip flex items-center justify-between"
+                          className="flex items-center justify-between p-0.5 rounded-lg border bg-accent/50 border-primary/20 transition-colors h-[52px]"
                         >
-                          <div className="flex items-center gap-2">
-                            <UserAvatar
-                              name={user.name}
-                              gender={user.gender}
-                              avatarUrl={user.avatarUrl}
-                              onAvatarChange={(file) => {
-                                avatarMutation.mutate({ userId: user.id, file });
-                              }}
-                              showUpload={true}
-                              className="h-8 w-8"
-                            />
-                            <span className="text-sm font-medium">{user.name}</span>
+                          <div className="flex items-center gap-2 h-full">
+                            <div className="h-full flex items-center pl-0.5 pointer-events-auto">
+                              <UserAvatar
+                                name={user.name}
+                                gender={user.gender}
+                                avatarUrl={user.avatarUrl}
+                                onAvatarChange={(file) => {
+                                  console.log("Avatar change triggered for user:", user.id);
+                                  avatarMutation.mutate({ userId: user.id, file });
+                                }}
+                                showUpload={true}
+                                className="h-[50px] w-[50px]"
+                              />
+                            </div>
+                            <span className="text-base font-medium leading-none">{user.name}</span>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 pr-1">
                             <button 
                               onClick={() => {
                                 let nextState = "none";
+                                // Toggle between 'black' (standard) and 'green' (slot bought)
                                 if (status === "green") nextState = "black";
                                 else nextState = "green";
 
@@ -477,10 +483,10 @@ export function UserMatrix() {
                                   selected: nextState,
                                 });
                               }}
-                              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                              className={`px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-tight transition-all ${
                                 status === "green" 
-                                  ? "bg-primary text-primary-foreground" 
-                                  : "bg-muted text-muted-foreground hover:bg-accent"
+                                  ? "bg-green-100 border-green-500 text-green-700 opacity-100" 
+                                  : "border-muted-foreground/30 text-muted-foreground/30 opacity-40 hover:opacity-60"
                               }`}
                             >
                               Слот
@@ -488,7 +494,9 @@ export function UserMatrix() {
                             <Button
                               variant="ghost"
                               size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-destructive"
                               onClick={() => {
+                                // Only remove from this specific race
                                 userCategoryMutation.mutate({
                                   userId: user.id,
                                   categoryId: category.id,
@@ -496,7 +504,7 @@ export function UserMatrix() {
                                 });
                               }}
                             >
-                              <X className="h-4 w-4" />
+                              <X className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>

@@ -9,10 +9,8 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    min-height: 100vh;
   }
 }
-
 @layer base {
   html {
     font-size: 14px;
@@ -35,17 +33,8 @@
   }
 }
 
-@layer components {
-  .participant-chip {
-    @apply rounded-lg px-3 py-2 text-sm font-medium bg-muted border border-border;
-    @apply transition-colors duration-200;
-  }
 
-  .participant-chip:hover {
-    @apply bg-accent;
-  }
-}
-
+/* Стили для закрепленных ячеек таблицы */
 .sticky {
   position: sticky;
   box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);

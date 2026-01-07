@@ -9,8 +9,11 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(240 10% 6%) 0%, hsl(240 10% 10%) 50%, hsl(240 10% 6%) 100%);
+    min-height: 100vh;
   }
 }
+
 @layer base {
   html {
     font-size: 14px;
@@ -33,11 +36,79 @@
   }
 }
 
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
 
-/* Стили для закрепленных ячеек таблицы */
+  .glass-card-hover {
+    @apply transition-all duration-300;
+  }
+
+  .glass-card-hover:hover {
+    @apply bg-white/10 border-white/20;
+    box-shadow: 
+      0 12px 48px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(132, 204, 22, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .neon-glow {
+    box-shadow: 
+      0 0 10px rgba(132, 204, 22, 0.5),
+      0 0 20px rgba(132, 204, 22, 0.3),
+      0 0 30px rgba(132, 204, 22, 0.2);
+  }
+
+  .neon-text {
+    text-shadow: 
+      0 0 10px rgba(132, 204, 22, 0.8),
+      0 0 20px rgba(132, 204, 22, 0.5),
+      0 0 30px rgba(132, 204, 22, 0.3);
+  }
+
+  .neon-border {
+    @apply border-primary/50;
+    box-shadow: 
+      0 0 10px rgba(132, 204, 22, 0.3),
+      inset 0 0 10px rgba(132, 204, 22, 0.1);
+  }
+
+  .btn-neon {
+    @apply bg-primary text-black font-bold rounded-full px-8 py-3;
+    @apply transition-all duration-300;
+    box-shadow: 0 0 20px rgba(132, 204, 22, 0.4);
+  }
+
+  .btn-neon:hover {
+    box-shadow: 
+      0 0 30px rgba(132, 204, 22, 0.6),
+      0 0 60px rgba(132, 204, 22, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .avatar-glow {
+    @apply ring-2 ring-primary/30;
+    box-shadow: 0 0 15px rgba(132, 204, 22, 0.3);
+  }
+
+  .participant-chip {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl;
+    @apply transition-all duration-200;
+  }
+
+  .participant-chip:hover {
+    @apply bg-white/10 border-primary/30;
+    box-shadow: 0 0 20px rgba(132, 204, 22, 0.15);
+  }
+}
+
 .sticky {
   position: sticky;
-  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.3);
 }
 
 .table-container {

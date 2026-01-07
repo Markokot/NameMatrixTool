@@ -158,7 +158,7 @@ export function UserMatrix() {
   return (
     <div className="space-y-6">
       {/* Admin Controls */}
-      <div className="flex flex-wrap gap-4 p-4 bg-muted/30 rounded-lg border">
+      <div className="flex flex-wrap gap-4 p-5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="w-[160px]">
@@ -247,12 +247,12 @@ export function UserMatrix() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Пол</label>
                       <select
-                        className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
+                        className="w-full h-10 px-3 py-2 rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50"
                         value={newUser.gender}
                         onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
                       >
-                        <option value="male">Мужской</option>
-                        <option value="female">Женский</option>
+                        <option value="male" className="bg-[hsl(240,10%,10%)] text-white">Мужской</option>
+                        <option value="female" className="bg-[hsl(240,10%,10%)] text-white">Женский</option>
                       </select>
                     </div>
                     <Button 
@@ -271,7 +271,7 @@ export function UserMatrix() {
                 const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
                 
                 return (
-                  <div key={user.id} className="flex gap-4 p-4 rounded-lg border bg-accent/30">
+                  <div key={user.id} className="flex gap-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md">
                     <UserAvatar 
                       name={user.name} 
                       gender={user.gender} 
@@ -322,12 +322,12 @@ export function UserMatrix() {
           );
 
           return (
-            <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/50 shadow-sm hover:shadow-md transition-shadow">
+            <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/60" style={{ boxShadow: '0 0 30px rgba(132, 204, 22, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3)' }}>
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex gap-6 items-center">
                     <div className="relative group">
-                      <div className="h-24 w-36 border-2 border-muted shadow-sm rounded-md overflow-hidden bg-muted flex items-center justify-center">
+                      <div className="h-24 w-36 border-2 border-white/20 shadow-lg rounded-xl overflow-hidden bg-white/5 backdrop-blur-md flex items-center justify-center">
                         {category.logoUrl ? (
                           <img 
                             src={`${category.logoUrl}${category.logoUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
@@ -401,7 +401,7 @@ export function UserMatrix() {
                 <div className="flex justify-start">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-8 h-11">
+                      <Button className="rounded-full px-8 h-11">
                         Регистрация
                       </Button>
                     </DialogTrigger>
@@ -414,7 +414,7 @@ export function UserMatrix() {
                           <p className="text-center text-muted-foreground py-4">Все участники зарегистрированы</p>
                         ) : (
                           nonRegisteredUsers.map(user => (
-                            <div key={user.id} className="flex items-center justify-between p-2 border rounded-lg">
+                            <div key={user.id} className="flex items-center justify-between p-2 border border-white/10 rounded-xl bg-white/5 backdrop-blur-md">
                               <div className="flex items-center gap-3">
                                 <UserAvatar name={user.name} gender={user.gender} avatarUrl={user.avatarUrl} />
                                 <span className="text-base font-medium">{user.name}</span>
@@ -451,7 +451,7 @@ export function UserMatrix() {
                       return (
                         <div 
                           key={user.id} 
-                          className="flex items-center justify-between p-0.5 rounded-lg border bg-accent/50 border-primary/20 transition-colors h-[52px]"
+                          className="flex items-center justify-between p-0.5 rounded-xl border bg-white/5 backdrop-blur-md border-white/10 transition-all duration-200 h-[52px] hover:bg-white/10 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(132,204,22,0.15)]"
                         >
                           <div className="flex items-center gap-2 h-full">
                             <div className="h-full flex items-center pl-0.5 pointer-events-auto">
@@ -473,7 +473,6 @@ export function UserMatrix() {
                             <button 
                               onClick={() => {
                                 let nextState = "none";
-                                // Toggle between 'black' (standard) and 'green' (slot bought)
                                 if (status === "green") nextState = "black";
                                 else nextState = "green";
 
@@ -483,10 +482,10 @@ export function UserMatrix() {
                                   selected: nextState,
                                 });
                               }}
-                              className={`px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-tight transition-all ${
+                              className={`px-2 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-tight transition-all duration-200 ${
                                 status === "green" 
-                                  ? "bg-green-100 border-green-500 text-green-700 opacity-100" 
-                                  : "border-muted-foreground/30 text-muted-foreground/30 opacity-40 hover:opacity-60"
+                                  ? "bg-primary/20 border-primary text-primary shadow-[0_0_10px_rgba(132,204,22,0.3)]" 
+                                  : "border-white/20 text-white/40 hover:border-white/40 hover:text-white/60"
                               }`}
                             >
                               Слот

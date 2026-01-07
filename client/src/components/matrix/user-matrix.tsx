@@ -161,7 +161,7 @@ export function UserMatrix() {
       <div className="flex flex-wrap gap-4 p-4 bg-muted/30 rounded-lg border">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-[160px]">
+            <Button size="sm" className="w-[160px] bg-[#10b981] hover:bg-[#059669] text-white">
               <Plus className="h-4 w-4 mr-2" />
               Добавить забег
             </Button>
@@ -204,7 +204,7 @@ export function UserMatrix() {
                 />
               </div>
               <Button 
-                className="w-full" 
+                className="w-full bg-[#10b981] hover:bg-[#059669] text-white" 
                 onClick={() => categoryMutation.mutate(newCategory)}
                 disabled={!newCategory.name || !newCategory.date}
               >
@@ -216,7 +216,7 @@ export function UserMatrix() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-[160px]">
+            <Button size="sm" className="w-[160px] bg-[#10b981] hover:bg-[#059669] text-white">
               <Users className="h-4 w-4 mr-2" />
               Участники
             </Button>
@@ -226,7 +226,7 @@ export function UserMatrix() {
               <DialogTitle>Список всех участников</DialogTitle>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button size="sm" className="bg-[#10b981] hover:bg-[#059669] text-white">
                     <Plus className="h-4 w-4 mr-2" />
                     Добавить участника
                   </Button>
@@ -256,7 +256,7 @@ export function UserMatrix() {
                       </select>
                     </div>
                     <Button 
-                      className="w-full" 
+                      className="w-full bg-[#10b981] hover:bg-[#059669] text-white" 
                       onClick={() => userMutation.mutate(newUser)}
                       disabled={!newUser.name}
                     >

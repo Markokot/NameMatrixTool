@@ -161,7 +161,7 @@ export function UserMatrix() {
       <div className="flex flex-wrap gap-4 p-4 bg-muted/30 rounded-lg border">
         <Dialog>
           <DialogTrigger asChild>
-            <Button size="sm" className="w-[160px] bg-[#10b981] hover:bg-[#059669] text-white">
+            <Button variant="outline" size="sm" className="w-[160px]">
               <Plus className="h-4 w-4 mr-2" />
               Добавить забег
             </Button>
@@ -204,7 +204,7 @@ export function UserMatrix() {
                 />
               </div>
               <Button 
-                className="w-full bg-[#10b981] hover:bg-[#059669] text-white" 
+                className="w-full" 
                 onClick={() => categoryMutation.mutate(newCategory)}
                 disabled={!newCategory.name || !newCategory.date}
               >
@@ -216,19 +216,17 @@ export function UserMatrix() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button size="sm" className="w-[160px] bg-[#10b981] hover:bg-[#059669] text-white">
+            <Button variant="outline" size="sm" className="w-[160px]">
               <Users className="h-4 w-4 mr-2" />
               Участники
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
+            <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <DialogTitle>Список всех участников</DialogTitle>
-            </DialogHeader>
-            <div className="flex justify-end pb-2">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="bg-[#10b981] hover:bg-[#059669] text-white">
+                  <Button variant="outline" size="sm">
                     <Plus className="h-4 w-4 mr-2" />
                     Добавить участника
                   </Button>
@@ -258,7 +256,7 @@ export function UserMatrix() {
                       </select>
                     </div>
                     <Button 
-                      className="w-full bg-[#10b981] hover:bg-[#059669] text-white" 
+                      className="w-full" 
                       onClick={() => userMutation.mutate(newUser)}
                       disabled={!newUser.name}
                     >
@@ -267,8 +265,8 @@ export function UserMatrix() {
                   </div>
                 </DialogContent>
               </Dialog>
-            </div>
-            <div className="space-y-6">
+            </DialogHeader>
+            <div className="space-y-6 pt-4">
               {users.map((user) => {
                 const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
                 
@@ -295,7 +293,7 @@ export function UserMatrix() {
                                 <span className="font-medium">{race.name}</span>
                                 <span className="text-muted-foreground">({race.date})</span>
                                 {reg.selected === "green" && (
-                                  <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-[#10b981] text-[10px] font-bold uppercase">
+                                  <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold uppercase">
                                     Слот куплен
                                   </span>
                                 )}
@@ -324,7 +322,7 @@ export function UserMatrix() {
           );
 
           return (
-            <Card key={category.id} className="overflow-hidden border-l-4 border-l-[#10b981] shadow-sm hover:shadow-md transition-shadow">
+            <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/50 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex gap-6 items-center">
@@ -403,7 +401,7 @@ export function UserMatrix() {
                 <div className="flex justify-start">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button className="bg-[#10b981] hover:bg-[#059669] text-white font-semibold rounded-full px-8 h-11">
+                      <Button className="bg-[#D9F99D] hover:bg-[#bef264] text-black font-semibold rounded-full px-8 h-11">
                         Регистрация
                       </Button>
                     </DialogTrigger>
@@ -487,7 +485,7 @@ export function UserMatrix() {
                               }}
                               className={`px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-tight transition-all ${
                                 status === "green" 
-                                  ? "bg-emerald-100 border-[#10b981] text-[#10b981] opacity-100" 
+                                  ? "bg-green-100 border-green-500 text-green-700 opacity-100" 
                                   : "border-muted-foreground/30 text-muted-foreground/30 opacity-40 hover:opacity-60"
                               }`}
                             >

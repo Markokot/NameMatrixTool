@@ -222,7 +222,7 @@ export function UserMatrix() {
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pr-8">
               <DialogTitle>Список всех участников</DialogTitle>
               <Dialog>
                 <DialogTrigger asChild>

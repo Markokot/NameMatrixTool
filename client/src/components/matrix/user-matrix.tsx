@@ -222,8 +222,10 @@ export function UserMatrix() {
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <DialogHeader>
               <DialogTitle>Список всех участников</DialogTitle>
+            </DialogHeader>
+            <div className="flex justify-end pb-2">
               <Dialog>
                 <DialogTrigger asChild>
                   <Button size="sm" className="bg-[#10b981] hover:bg-[#059669] text-white">
@@ -265,8 +267,8 @@ export function UserMatrix() {
                   </div>
                 </DialogContent>
               </Dialog>
-            </DialogHeader>
-            <div className="space-y-6 pt-4">
+            </div>
+            <div className="space-y-6">
               {users.map((user) => {
                 const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
                 

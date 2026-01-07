@@ -7,6 +7,7 @@ import { UserAvatar } from "./user-avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getGradientForRace, getChipGradientClass } from "@/lib/gradients";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -158,7 +159,7 @@ export function UserMatrix() {
   return (
     <div className="space-y-6">
       {/* Admin Controls */}
-      <div className="flex flex-wrap gap-4 p-5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
+      <div className="flex flex-wrap gap-4 p-5 bg-card rounded-xl border shadow-sm">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="w-[160px]">
@@ -247,12 +248,12 @@ export function UserMatrix() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Пол</label>
                       <select
-                        className="w-full h-10 px-3 py-2 rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50"
+                        className="w-full h-10 px-3 py-2 rounded-lg border border-input bg-background text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                         value={newUser.gender}
                         onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
                       >
-                        <option value="male" className="bg-[hsl(240,10%,10%)] text-white">Мужской</option>
-                        <option value="female" className="bg-[hsl(240,10%,10%)] text-white">Женский</option>
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
                       </select>
                     </div>
                     <Button 
@@ -271,7 +272,7 @@ export function UserMatrix() {
                 const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
                 
                 return (
-                  <div key={user.id} className="flex gap-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md">
+                  <div key={user.id} className="flex gap-4 p-4 rounded-xl border bg-card shadow-sm">
                     <UserAvatar 
                       name={user.name} 
                       gender={user.gender} 
@@ -313,56 +314,58 @@ export function UserMatrix() {
 
       {/* Race Blocks */}
       <div className="space-y-4">
-        {categories.map((category) => {
+        {categories.map((category, index) => {
           const registeredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) !== "none"
           );
           const nonRegisteredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) === "none"
           );
+          const gradient = getGradientForRace(index);
 
           return (
-            <Card key={category.id} className="overflow-hidden border-l-4 border-l-primary/60" style={{ boxShadow: '0 0 30px rgba(132, 204, 22, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3)' }}>
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex gap-6 items-center">
-                    <div className="relative group">
-                      <div className="h-24 w-36 border-2 border-white/20 shadow-lg rounded-xl overflow-hidden bg-white/5 backdrop-blur-md flex items-center justify-center">
-                        {category.logoUrl ? (
-                          <img 
-                            src={`${category.logoUrl}${category.logoUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
-                            alt={category.name} 
-                            className="h-full w-full object-cover"
+            <Card key={category.id} className="overflow-hidden shadow-md">
+              <div className="relative" style={{ background: gradient.background }}>
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-start">
+                    <div className="flex gap-6 items-center">
+                      <div className="relative group">
+                        <div className="h-24 w-36 border-2 border-white/30 shadow-lg rounded-xl overflow-hidden bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                          {category.logoUrl ? (
+                            <img 
+                              src={`${category.logoUrl}${category.logoUrl.includes('?') ? '&' : '?'}t=${Date.now()}`} 
+                              alt={category.name} 
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <Trophy className="h-10 w-10 text-white/80" />
+                          )}
+                        </div>
+                        <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-md">
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) logoMutation.mutate({ categoryId: category.id, file });
+                            }}
                           />
-                        ) : (
-                          <Trophy className="h-10 w-10 text-muted-foreground" />
-                        )}
+                          <Upload className="h-6 w-6 text-white" />
+                        </label>
                       </div>
-                      <label className="cursor-pointer absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-md">
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) logoMutation.mutate({ categoryId: category.id, file });
-                          }}
-                        />
-                        <Upload className="h-6 w-6 text-white" />
-                      </label>
-                    </div>
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider font-semibold">
+                      <div className={`flex items-center gap-2 text-sm uppercase tracking-wider font-semibold ${gradient.textColor} opacity-90`}>
                         <Calendar className="h-4 w-4" />
                         {category.date} 2026
                       </div>
-                      <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                      <CardTitle className={`text-2xl font-bold flex items-center gap-2 ${gradient.textColor}`}>
                         {category.url ? (
                           <a 
                             href={category.url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="hover:text-primary transition-colors flex items-center gap-2"
+                            className="hover:opacity-80 transition-opacity flex items-center gap-2"
                           >
                             {category.name}
                             <ExternalLink className="h-4 w-4" />
@@ -373,13 +376,13 @@ export function UserMatrix() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-6 w-6 text-muted-foreground"
+                          className={gradient.textColor}
                           onClick={() => setEditingCategory(category)}
                         >
                           <Edit2 className="h-3 w-3" />
                         </Button>
                       </CardTitle>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <div className={`flex items-center gap-1 text-sm ${gradient.textColor} opacity-80`}>
                         <MapPin className="h-3 w-3" />
                         {category.location}
                       </div>
@@ -389,7 +392,7 @@ export function UserMatrix() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      className={gradient.textColor}
                       onClick={() => confirmDelete('category', category.id)}
                     >
                       <X className="h-4 w-4" />
@@ -397,11 +400,12 @@ export function UserMatrix() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              </div>
+              <CardContent className="space-y-4 pt-4">
                 <div className="flex justify-start">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button className="rounded-full px-8 h-11">
+                      <Button className="rounded-full px-8">
                         Регистрация
                       </Button>
                     </DialogTrigger>
@@ -414,7 +418,7 @@ export function UserMatrix() {
                           <p className="text-center text-muted-foreground py-4">Все участники зарегистрированы</p>
                         ) : (
                           nonRegisteredUsers.map(user => (
-                            <div key={user.id} className="flex items-center justify-between p-2 border border-white/10 rounded-xl bg-white/5 backdrop-blur-md">
+                            <div key={user.id} className="flex items-center justify-between p-2 border rounded-lg bg-accent/30">
                               <div className="flex items-center gap-3">
                                 <UserAvatar name={user.name} gender={user.gender} avatarUrl={user.avatarUrl} />
                                 <span className="text-base font-medium">{user.name}</span>
@@ -446,12 +450,13 @@ export function UserMatrix() {
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {registeredUsers.map((user) => {
+                    {registeredUsers.map((user, userIndex) => {
                       const status = getUserCategoryState(user.id, category.id);
+                      const chipGradient = getChipGradientClass(userIndex);
                       return (
                         <div 
                           key={user.id} 
-                          className="flex items-center justify-between p-0.5 rounded-xl border bg-white/5 backdrop-blur-md border-white/10 transition-all duration-200 h-[52px] hover:bg-white/10 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(132,204,22,0.15)]"
+                          className={`participant-chip flex items-center justify-between p-1 h-[52px] ${chipGradient}`}
                         >
                           <div className="flex items-center gap-2 h-full">
                             <div className="h-full flex items-center pl-0.5 pointer-events-auto">
@@ -460,14 +465,13 @@ export function UserMatrix() {
                                 gender={user.gender}
                                 avatarUrl={user.avatarUrl}
                                 onAvatarChange={(file) => {
-                                  console.log("Avatar change triggered for user:", user.id);
                                   avatarMutation.mutate({ userId: user.id, file });
                                 }}
                                 showUpload={true}
-                                className="h-[50px] w-[50px]"
+                                className="h-[44px] w-[44px]"
                               />
                             </div>
-                            <span className="text-base font-medium leading-none">{user.name}</span>
+                            <span className="text-sm font-semibold leading-none">{user.name}</span>
                           </div>
                           <div className="flex items-center gap-1 pr-1">
                             <button 
@@ -482,10 +486,10 @@ export function UserMatrix() {
                                   selected: nextState,
                                 });
                               }}
-                              className={`px-2 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-tight transition-all duration-200 ${
+                              className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-tight transition-all duration-200 ${
                                 status === "green" 
-                                  ? "bg-primary/20 border-primary text-primary shadow-[0_0_10px_rgba(132,204,22,0.3)]" 
-                                  : "border-white/20 text-white/40 hover:border-white/40 hover:text-white/60"
+                                  ? "bg-white/90 text-green-700 shadow-sm" 
+                                  : "bg-black/20 text-current opacity-60 hover:opacity-80"
                               }`}
                             >
                               Слот
@@ -493,9 +497,7 @@ export function UserMatrix() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-muted-foreground hover:text-destructive"
                               onClick={() => {
-                                // Only remove from this specific race
                                 userCategoryMutation.mutate({
                                   userId: user.id,
                                   categoryId: category.id,

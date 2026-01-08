@@ -37,7 +37,7 @@ export class MemStorage implements IStorage {
   private dataFile: string;
 
   constructor() {
-    this.dataFile = "/tmp/running-events/data.json";
+    this.dataFile = "/home/runner/NameMatrixTool/data.json";
     this.categories = new Map();
     this.users = new Map();
     this.userCategories = new Map();

@@ -485,7 +485,7 @@ export function UserMatrix() {
                               }}
                               className={`px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-tight transition-all ${
                                 status === "green" 
-                                  ? "bg-green-100 border-green-500 text-green-700 opacity-100" 
+                                  ? "bg-[#D9F99D] border-[#bef264] text-black opacity-100" 
                                   : "border-muted-foreground/30 text-muted-foreground/30 opacity-40 hover:opacity-60"
                               }`}
                             >

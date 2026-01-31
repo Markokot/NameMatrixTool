@@ -628,13 +628,34 @@ export function UserMatrix() {
                         <tr className="border-b">
                           <th className="text-left p-2 font-medium text-xs text-muted-foreground"></th>
                           <th className="text-center p-2 w-12">
-                            <Flag className="h-4 w-4 mx-auto text-muted-foreground" />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Flag className="h-4 w-4 mx-auto text-muted-foreground cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Завершённые забеги</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </th>
                           <th className="text-center p-2 w-12">
-                            <Pencil className="h-4 w-4 mx-auto text-muted-foreground" />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Pencil className="h-4 w-4 mx-auto text-muted-foreground cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Регистрации</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </th>
                           <th className="text-center p-2 w-12">
-                            <Ticket className="h-4 w-4 mx-auto text-[#65a30d]" />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Ticket className="h-4 w-4 mx-auto text-[#65a30d] cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Купленные слоты</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </th>
                         </tr>
                       </thead>
@@ -665,8 +686,6 @@ export function UserMatrix() {
                               }
                             }
                           });
-                          
-                          if (userRegs.length === 0) return null;
                           
                           return (
                             <tr key={user.id} className="border-b last:border-b-0 hover:bg-muted/50 transition-colors">

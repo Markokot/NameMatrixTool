@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Plus, X, Calendar, MapPin, Users, Upload, Trophy, Edit2, ExternalLink } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { type Category, type UserCategory, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { UserAvatar } from "./user-avatar";
@@ -32,6 +33,8 @@ export function UserMatrix() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState<{type: 'user' | 'category', id: number} | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [showPastRaces, setShowPastRaces] = useState(false);
+  const [showFutureRaces, setShowFutureRaces] = useState(true);
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -138,6 +141,31 @@ export function UserMatrix() {
     return userCategory ? userCategory.selected : "none";
   };
 
+  const filteredCategories = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    return categories.filter((category) => {
+      const [day, month] = category.date.split('.').map(Number);
+      const raceDate = new Date(2026, month - 1, day);
+      raceDate.setHours(0, 0, 0, 0);
+      
+      const isPast = raceDate < today;
+      const isFuture = raceDate >= today;
+      
+      if (showPastRaces && showFutureRaces) {
+        return true;
+      }
+      if (showPastRaces && !showFutureRaces) {
+        return isPast;
+      }
+      if (!showPastRaces && showFutureRaces) {
+        return isFuture;
+      }
+      return false;
+    });
+  }, [categories, showPastRaces, showFutureRaces]);
+
   const confirmDelete = (type: 'user' | 'category', id: number) => {
     setDeleteItem({type, id});
     setDeleteDialogOpen(true);
@@ -221,99 +249,37 @@ export function UserMatrix() {
               Участники
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pr-8">
-              <DialogTitle>Список всех участников</DialogTitle>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Добавить участника
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Новый участник</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 pt-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Имя</label>
-                      <Input
-                        value={newUser.name}
-                        onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="Иван Иванов"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Пол</label>
-                      <select
-                        className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
-                        value={newUser.gender}
-                        onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
-                      >
-                        <option value="male">Мужской</option>
-                        <option value="female">Женский</option>
-                      </select>
-                    </div>
-                    <Button 
-                      className="w-full" 
-                      onClick={() => userMutation.mutate(newUser)}
-                      disabled={!newUser.name}
-                    >
-                      Добавить
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </DialogHeader>
-            <div className="space-y-6 pt-4">
-              {users.map((user) => {
-                const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
-                
-                return (
-                  <div key={user.id} className="flex gap-4 p-4 rounded-lg border bg-accent/30">
-                    <UserAvatar 
-                      name={user.name} 
-                      gender={user.gender} 
-                      avatarUrl={user.avatarUrl} 
-                      className="h-20 w-20 flex-shrink-0"
-                    />
-                    <div className="flex-1 space-y-2">
-                      <h3 className="text-xl font-bold">{user.name}</h3>
-                      <div className="space-y-1">
-                        {userRegistrations.length === 0 ? (
-                          <p className="text-sm text-muted-foreground italic">Нет регистраций на забеги</p>
-                        ) : (
-                          userRegistrations.map((reg) => {
-                            const race = categories.find(c => c.id === reg.categoryId);
-                            if (!race) return null;
-                            
-                            return (
-                              <div key={race.id} className="flex items-center gap-2 text-sm">
-                                <span className="font-medium">{race.name}</span>
-                                <span className="text-muted-foreground">({race.date})</span>
-                                {reg.selected === "green" && (
-                                  <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold uppercase">
-                                    Слот куплен
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </DialogContent>
         </Dialog>
+
+        <div className="flex items-center gap-4 ml-auto">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="past-races"
+              checked={showPastRaces}
+              onCheckedChange={(checked) => setShowPastRaces(checked === true)}
+              data-testid="checkbox-past-races"
+            />
+            <label htmlFor="past-races" className="text-sm font-medium cursor-pointer">
+              Прошедшие забеги
+            </label>
+          </div>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="future-races"
+              checked={showFutureRaces}
+              onCheckedChange={(checked) => setShowFutureRaces(checked === true)}
+              data-testid="checkbox-future-races"
+            />
+            <label htmlFor="future-races" className="text-sm font-medium cursor-pointer">
+              Будущие забеги
+            </label>
+          </div>
+        </div>
       </div>
 
       {/* Race Blocks */}
       <div className="space-y-4">
-        {categories.map((category) => {
+        {filteredCategories.map((category) => {
           const registeredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) !== "none"
           );
@@ -473,7 +439,6 @@ export function UserMatrix() {
                             <button 
                               onClick={() => {
                                 let nextState = "none";
-                                // Toggle between 'black' (standard) and 'green' (slot bought)
                                 if (status === "green") nextState = "black";
                                 else nextState = "green";
 
@@ -496,7 +461,6 @@ export function UserMatrix() {
                               size="icon"
                               className="h-8 w-8 text-muted-foreground hover:text-destructive"
                               onClick={() => {
-                                // Only remove from this specific race
                                 userCategoryMutation.mutate({
                                   userId: user.id,
                                   categoryId: category.id,

@@ -616,7 +616,7 @@ export function UserMatrix() {
             {/* Stats Sidebar - Desktop Only */}
             <aside className="hidden lg:block w-80 flex-shrink-0">
               <div className="sticky top-20 space-y-4">
-                <Card>
+                <Card className="border-l-4 border-l-primary/50">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                       Статистика участников

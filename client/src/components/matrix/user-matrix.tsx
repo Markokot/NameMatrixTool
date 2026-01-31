@@ -640,16 +640,6 @@ export function UserMatrix() {
                           <th className="text-center p-2 w-12">
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <Pencil className="h-4 w-4 mx-auto text-muted-foreground cursor-help" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Регистрации</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </th>
-                          <th className="text-center p-2 w-12">
-                            <Tooltip>
-                              <TooltipTrigger asChild>
                                 <Ticket className="h-4 w-4 mx-auto text-[#65a30d] cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent>
@@ -657,37 +647,58 @@ export function UserMatrix() {
                               </TooltipContent>
                             </Tooltip>
                           </th>
+                          <th className="text-center p-2 w-12">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Pencil className="h-4 w-4 mx-auto text-muted-foreground cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Регистрации</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {users.map((user) => {
-                          const userRegs = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
-                          
+                        {(() => {
                           const today = new Date();
                           today.setHours(0, 0, 0, 0);
                           
-                          let completedRaces = 0;
-                          let registrations = 0;
-                          let slotsBought = 0;
-                          
-                          userRegs.forEach((reg) => {
-                            const race = categories.find(c => c.id === reg.categoryId);
-                            if (race) {
-                              const [day, month] = race.date.split('.').map(Number);
-                              const raceDate = new Date(2026, month - 1, day);
-                              raceDate.setHours(0, 0, 0, 0);
-                              
-                              if (raceDate < today && reg.selected === "green") {
-                                completedRaces++;
+                          const usersWithStats = users.map((user) => {
+                            const userRegs = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
+                            
+                            let completedRaces = 0;
+                            let registrations = 0;
+                            let slotsBought = 0;
+                            
+                            userRegs.forEach((reg) => {
+                              const race = categories.find(c => c.id === reg.categoryId);
+                              if (race) {
+                                const [day, month] = race.date.split('.').map(Number);
+                                const raceDate = new Date(2026, month - 1, day);
+                                raceDate.setHours(0, 0, 0, 0);
+                                
+                                if (raceDate < today && reg.selected === "green") {
+                                  completedRaces++;
+                                }
+                                registrations++;
+                                if (reg.selected === "green") {
+                                  slotsBought++;
+                                }
                               }
-                              registrations++;
-                              if (reg.selected === "green") {
-                                slotsBought++;
-                              }
-                            }
+                            });
+                            
+                            return { user, completedRaces, registrations, slotsBought };
                           });
                           
-                          return (
+                          const sortedUsers = usersWithStats.sort((a, b) => {
+                            if (b.completedRaces !== a.completedRaces) return b.completedRaces - a.completedRaces;
+                            if (b.slotsBought !== a.slotsBought) return b.slotsBought - a.slotsBought;
+                            if (b.registrations !== a.registrations) return b.registrations - a.registrations;
+                            return a.user.name.localeCompare(b.user.name, 'ru');
+                          });
+                          
+                          return sortedUsers.map(({ user, completedRaces, registrations, slotsBought }) => (
                             <tr key={user.id} className="border-b last:border-b-0 hover:bg-muted/50 transition-colors">
                               <td className="p-2">
                                 <div className="flex items-center gap-2">
@@ -703,15 +714,15 @@ export function UserMatrix() {
                               <td className="text-center p-2 text-sm text-muted-foreground">
                                 {completedRaces > 0 ? completedRaces : '-'}
                               </td>
-                              <td className="text-center p-2 text-sm text-muted-foreground">
-                                {registrations > 0 ? registrations : '-'}
-                              </td>
                               <td className="text-center p-2 text-sm font-medium text-[#65a30d]">
                                 {slotsBought > 0 ? slotsBought : '-'}
                               </td>
+                              <td className="text-center p-2 text-sm text-muted-foreground">
+                                {registrations > 0 ? registrations : '-'}
+                              </td>
                             </tr>
-                          );
-                        })}
+                          ));
+                        })()}
                       </tbody>
                     </table>
                   </CardContent>

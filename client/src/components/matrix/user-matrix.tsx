@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, X, Calendar, MapPin, Users, Upload, Trophy, Edit2, ExternalLink } from "lucide-react";
+import { Plus, X, Calendar, MapPin, Users, Upload, Trophy, Edit2, ExternalLink, PersonStanding, History, CalendarClock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type Category, type UserCategory, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -26,6 +26,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function UserMatrix() {
   const [newCategory, setNewCategory] = useState({ name: "", date: "", location: "Москва", url: "" });
@@ -184,101 +190,225 @@ export function UserMatrix() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Admin Controls */}
-      <div className="flex flex-wrap gap-4 p-4 bg-muted/30 rounded-lg border">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-[160px]">
-              <Plus className="h-4 w-4 mr-2" />
-              Добавить забег
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Новый забег</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Название</label>
-                <Input
-                  value={newCategory.name}
-                  onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Напр: Grom Ski Night"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Дата (дд.мм)</label>
-                <Input
-                  value={newCategory.date}
-                  onChange={(e) => setNewCategory(prev => ({ ...prev, date: e.target.value }))}
-                  placeholder="01.01"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Локация</label>
-                <Input
-                  value={newCategory.location}
-                  onChange={(e) => setNewCategory(prev => ({ ...prev, location: e.target.value }))}
-                  placeholder="Москва"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Ссылка на страницу старта</label>
-                <Input
-                  value={newCategory.url}
-                  onChange={(e) => setNewCategory(prev => ({ ...prev, url: e.target.value }))}
-                  placeholder="https://..."
-                />
-              </div>
-              <Button 
-                className="w-full" 
-                onClick={() => categoryMutation.mutate(newCategory)}
-                disabled={!newCategory.name || !newCategory.date}
-              >
-                Создать
-              </Button>
+    <TooltipProvider>
+      <div className="min-h-screen">
+        {/* Header Bar */}
+        <header className="sticky top-0 z-50 bg-[#4a4a4a] text-white shadow-md">
+          <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <PersonStanding className="h-6 w-6" />
+              <span className="text-xl font-bold">Забеги</span>
             </div>
-          </DialogContent>
-        </Dialog>
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-[160px]">
-              <Users className="h-4 w-4 mr-2" />
-              Участники
-            </Button>
-          </DialogTrigger>
-        </Dialog>
+            {/* Controls */}
+            <div className="flex items-center gap-1">
+              {/* Add Race */}
+              <Dialog>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" data-testid="button-add-race">
+                        <Plus className="h-5 w-5" />
+                      </Button>
+                    </DialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Добавить забег</p>
+                  </TooltipContent>
+                </Tooltip>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Новый забег</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Название</label>
+                      <Input
+                        value={newCategory.name}
+                        onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Напр: Grom Ski Night"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Дата (дд.мм)</label>
+                      <Input
+                        value={newCategory.date}
+                        onChange={(e) => setNewCategory(prev => ({ ...prev, date: e.target.value }))}
+                        placeholder="01.01"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Локация</label>
+                      <Input
+                        value={newCategory.location}
+                        onChange={(e) => setNewCategory(prev => ({ ...prev, location: e.target.value }))}
+                        placeholder="Москва"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Ссылка на страницу старта</label>
+                      <Input
+                        value={newCategory.url}
+                        onChange={(e) => setNewCategory(prev => ({ ...prev, url: e.target.value }))}
+                        placeholder="https://..."
+                      />
+                    </div>
+                    <Button 
+                      className="w-full" 
+                      onClick={() => categoryMutation.mutate(newCategory)}
+                      disabled={!newCategory.name || !newCategory.date}
+                    >
+                      Создать
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
 
-        <div className="flex items-center gap-4 ml-auto">
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="past-races"
-              checked={showPastRaces}
-              onCheckedChange={(checked) => setShowPastRaces(checked === true)}
-              data-testid="checkbox-past-races"
-            />
-            <label htmlFor="past-races" className="text-sm font-medium cursor-pointer">
-              Прошедшие забеги
-            </label>
+              {/* Users */}
+              <Dialog>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" data-testid="button-users">
+                        <Users className="h-5 w-5" />
+                      </Button>
+                    </DialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Участники</p>
+                  </TooltipContent>
+                </Tooltip>
+                <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pr-8">
+                    <DialogTitle>Список всех участников</DialogTitle>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Добавить участника
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Новый участник</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 pt-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Имя</label>
+                            <Input
+                              value={newUser.name}
+                              onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
+                              placeholder="Иван Иванов"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Пол</label>
+                            <select
+                              className="w-full h-10 px-3 py-2 rounded-md border border-input bg-background"
+                              value={newUser.gender}
+                              onChange={(e) => setNewUser(prev => ({ ...prev, gender: e.target.value }))}
+                            >
+                              <option value="male">Мужской</option>
+                              <option value="female">Женский</option>
+                            </select>
+                          </div>
+                          <Button 
+                            className="w-full" 
+                            onClick={() => userMutation.mutate(newUser)}
+                            disabled={!newUser.name}
+                          >
+                            Добавить
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </DialogHeader>
+                  <div className="space-y-6 pt-4">
+                    {users.map((user) => {
+                      const userRegistrations = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
+                      
+                      return (
+                        <div key={user.id} className="flex gap-4 p-4 rounded-lg border bg-accent/30">
+                          <UserAvatar 
+                            name={user.name} 
+                            gender={user.gender} 
+                            avatarUrl={user.avatarUrl} 
+                            className="h-20 w-20 flex-shrink-0"
+                          />
+                          <div className="flex-1 space-y-2">
+                            <h3 className="text-xl font-bold">{user.name}</h3>
+                            <div className="space-y-1">
+                              {userRegistrations.length === 0 ? (
+                                <p className="text-sm text-muted-foreground italic">Нет регистраций на забеги</p>
+                              ) : (
+                                userRegistrations.map((reg) => {
+                                  const race = categories.find(c => c.id === reg.categoryId);
+                                  if (!race) return null;
+                                  
+                                  return (
+                                    <div key={race.id} className="flex items-center gap-2 text-sm">
+                                      <span className="font-medium">{race.name}</span>
+                                      <span className="text-muted-foreground">({race.date})</span>
+                                      {reg.selected === "green" && (
+                                        <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold uppercase">
+                                          Слот куплен
+                                        </span>
+                                      )}
+                                    </div>
+                                  );
+                                })
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <div className="w-px h-6 bg-white/30 mx-2" />
+
+              {/* Past Races Filter */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setShowPastRaces(!showPastRaces)}
+                    className={`p-2 rounded-md transition-colors ${showPastRaces ? 'bg-white/20' : 'hover:bg-white/10'}`}
+                    data-testid="checkbox-past-races"
+                  >
+                    <History className={`h-5 w-5 ${showPastRaces ? 'text-white' : 'text-white/50'}`} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Прошедшие забеги</p>
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Future Races Filter */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setShowFutureRaces(!showFutureRaces)}
+                    className={`p-2 rounded-md transition-colors ${showFutureRaces ? 'bg-white/20' : 'hover:bg-white/10'}`}
+                    data-testid="checkbox-future-races"
+                  >
+                    <CalendarClock className={`h-5 w-5 ${showFutureRaces ? 'text-white' : 'text-white/50'}`} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Будущие забеги</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="future-races"
-              checked={showFutureRaces}
-              onCheckedChange={(checked) => setShowFutureRaces(checked === true)}
-              data-testid="checkbox-future-races"
-            />
-            <label htmlFor="future-races" className="text-sm font-medium cursor-pointer">
-              Будущие забеги
-            </label>
-          </div>
-        </div>
-      </div>
+        </header>
 
-      {/* Race Blocks */}
-      <div className="space-y-4">
+        {/* Main Content */}
+        <main className="max-w-4xl mx-auto px-4 py-6">
+          {/* Race Blocks */}
+          <div className="space-y-4">
         {filteredCategories.map((category) => {
           const registeredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) !== "none"
@@ -479,73 +609,75 @@ export function UserMatrix() {
               </CardContent>
             </Card>
           );
-        })}
+          })}
+          </div>
+        </main>
+
+        <Dialog open={!!editingCategory} onOpenChange={(open) => !open && setEditingCategory(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Редактировать забег</DialogTitle>
+            </DialogHeader>
+            {editingCategory && (
+              <div className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Название</label>
+                  <Input
+                    value={editingCategory.name}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Дата (дд.мм)</label>
+                  <Input
+                    value={editingCategory.date}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, date: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Локация</label>
+                  <Input
+                    value={editingCategory.location}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, location: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Ссылка на страницу старта</label>
+                  <Input
+                    value={editingCategory.url || ""}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, url: e.target.value })}
+                    placeholder="https://..."
+                  />
+                </div>
+                <Button 
+                  className="w-full" 
+                  onClick={() => categoryMutation.mutate(editingCategory)}
+                >
+                  Сохранить
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Подтвердите удаление</AlertDialogTitle>
+              <AlertDialogDescription>
+                Вы уверены, что хотите удалить этот {deleteItem?.type === 'user' ? 'профиль' : 'забег'}?
+                Это действие нельзя отменить.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Отмена</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Удалить
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
-
-      <Dialog open={!!editingCategory} onOpenChange={(open) => !open && setEditingCategory(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Редактировать забег</DialogTitle>
-          </DialogHeader>
-          {editingCategory && (
-            <div className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Название</label>
-                <Input
-                  value={editingCategory.name}
-                  onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Дата (дд.мм)</label>
-                <Input
-                  value={editingCategory.date}
-                  onChange={(e) => setEditingCategory({ ...editingCategory, date: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Локация</label>
-                <Input
-                  value={editingCategory.location}
-                  onChange={(e) => setEditingCategory({ ...editingCategory, location: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Ссылка на страницу старта</label>
-                <Input
-                  value={editingCategory.url || ""}
-                  onChange={(e) => setEditingCategory({ ...editingCategory, url: e.target.value })}
-                  placeholder="https://..."
-                />
-              </div>
-              <Button 
-                className="w-full" 
-                onClick={() => categoryMutation.mutate(editingCategory)}
-              >
-                Сохранить
-              </Button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Подтвердите удаление</AlertDialogTitle>
-            <AlertDialogDescription>
-              Вы уверены, что хотите удалить этот {deleteItem?.type === 'user' ? 'профиль' : 'забег'}?
-              Это действие нельзя отменить.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Отмена</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Удалить
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+    </TooltipProvider>
   );
 }

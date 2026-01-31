@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, X, Calendar, MapPin, Users, Upload, Trophy, Edit2, ExternalLink, PersonStanding, History, CalendarClock } from "lucide-react";
+import { Plus, X, Calendar, MapPin, Users, Upload, Trophy, Edit2, ExternalLink, PersonStanding, History, CalendarClock, Flag, Pencil, Ticket } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type Category, type UserCategory, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -622,68 +622,79 @@ export function UserMatrix() {
                       Статистика участников
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    {users.map((user) => {
-                      const userRegs = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
-                      
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      
-                      let completedRaces = 0;
-                      let futureRaces = 0;
-                      let futureSlotsBought = 0;
-                      
-                      userRegs.forEach((reg) => {
-                        const race = categories.find(c => c.id === reg.categoryId);
-                        if (race) {
-                          const [day, month] = race.date.split('.').map(Number);
-                          const raceDate = new Date(2026, month - 1, day);
-                          raceDate.setHours(0, 0, 0, 0);
+                  <CardContent className="p-0">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2 font-medium text-xs text-muted-foreground"></th>
+                          <th className="text-center p-2 w-12">
+                            <Flag className="h-4 w-4 mx-auto text-muted-foreground" />
+                          </th>
+                          <th className="text-center p-2 w-12">
+                            <Pencil className="h-4 w-4 mx-auto text-muted-foreground" />
+                          </th>
+                          <th className="text-center p-2 w-12">
+                            <Ticket className="h-4 w-4 mx-auto text-[#65a30d]" />
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {users.map((user) => {
+                          const userRegs = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
                           
-                          if (raceDate < today && reg.selected === "green") {
-                            completedRaces++;
-                          } else if (raceDate >= today) {
-                            futureRaces++;
-                            if (reg.selected === "green") {
-                              futureSlotsBought++;
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          
+                          let completedRaces = 0;
+                          let registrations = 0;
+                          let slotsBought = 0;
+                          
+                          userRegs.forEach((reg) => {
+                            const race = categories.find(c => c.id === reg.categoryId);
+                            if (race) {
+                              const [day, month] = race.date.split('.').map(Number);
+                              const raceDate = new Date(2026, month - 1, day);
+                              raceDate.setHours(0, 0, 0, 0);
+                              
+                              if (raceDate < today && reg.selected === "green") {
+                                completedRaces++;
+                              }
+                              registrations++;
+                              if (reg.selected === "green") {
+                                slotsBought++;
+                              }
                             }
-                          }
-                        }
-                      });
-                      
-                      if (userRegs.length === 0) return null;
-                      
-                      return (
-                        <div key={user.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                          <UserAvatar 
-                            name={user.name} 
-                            gender={user.gender} 
-                            avatarUrl={user.avatarUrl}
-                            className="h-10 w-10 flex-shrink-0"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm truncate">{user.name}</p>
-                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                              {completedRaces > 0 && (
-                                <span className="flex items-center gap-1">
-                                  <History className="h-3 w-3" />
-                                  {completedRaces}
-                                </span>
-                              )}
-                              {futureRaces > 0 && (
-                                <span className="flex items-center gap-1">
-                                  <CalendarClock className="h-3 w-3" />
-                                  {futureRaces}
-                                  {futureSlotsBought > 0 && (
-                                    <span className="text-[#65a30d] font-medium">({futureSlotsBought})</span>
-                                  )}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                          });
+                          
+                          if (userRegs.length === 0) return null;
+                          
+                          return (
+                            <tr key={user.id} className="border-b last:border-b-0 hover:bg-muted/50 transition-colors">
+                              <td className="p-2">
+                                <div className="flex items-center gap-2">
+                                  <UserAvatar 
+                                    name={user.name} 
+                                    gender={user.gender} 
+                                    avatarUrl={user.avatarUrl}
+                                    className="h-8 w-8 flex-shrink-0"
+                                  />
+                                  <span className="font-medium text-sm truncate">{user.name}</span>
+                                </div>
+                              </td>
+                              <td className="text-center p-2 text-sm text-muted-foreground">
+                                {completedRaces > 0 ? completedRaces : '-'}
+                              </td>
+                              <td className="text-center p-2 text-sm text-muted-foreground">
+                                {registrations > 0 ? registrations : '-'}
+                              </td>
+                              <td className="text-center p-2 text-sm font-medium text-[#65a30d]">
+                                {slotsBought > 0 ? slotsBought : '-'}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </CardContent>
                 </Card>
               </div>

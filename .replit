@@ -14,10 +14,6 @@ run = ["node", "./dist/index.cjs"]
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 5001
-externalPort = 3000
-
 [workflows]
 runButton = "Project"
 
@@ -36,6 +32,7 @@ author = "agent"
 
 [workflows.workflow.metadata]
 agentRequireRestartOnSave = false
+outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

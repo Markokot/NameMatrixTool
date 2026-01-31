@@ -193,7 +193,7 @@ export function UserMatrix() {
     <TooltipProvider>
       <div className="min-h-screen">
         {/* Header Bar */}
-        <header className="sticky top-0 z-50 bg-[#84cc16] text-white shadow-md">
+        <header className="sticky top-0 z-50 bg-[#65a30d] text-white shadow-md">
           <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-2">

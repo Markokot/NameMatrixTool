@@ -406,9 +406,10 @@ export function UserMatrix() {
         </header>
 
         {/* Main Content */}
-        <main className="max-w-4xl mx-auto px-4 py-6">
-          {/* Race Blocks */}
-          <div className="space-y-4">
+        <main className="max-w-6xl mx-auto px-4 py-6">
+          <div className="flex gap-6">
+            {/* Race Blocks - Left Column */}
+            <div className="flex-1 space-y-4">
         {filteredCategories.map((category) => {
           const registeredUsers = users.filter(user => 
             getUserCategoryState(user.id, category.id) !== "none"
@@ -610,6 +611,83 @@ export function UserMatrix() {
             </Card>
           );
           })}
+            </div>
+
+            {/* Stats Sidebar - Desktop Only */}
+            <aside className="hidden lg:block w-80 flex-shrink-0">
+              <div className="sticky top-20 space-y-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                      Статистика участников
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {users.map((user) => {
+                      const userRegs = userCategories.filter(uc => uc.userId === user.id && uc.selected !== "none");
+                      
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      
+                      let completedRaces = 0;
+                      let futureRaces = 0;
+                      let futureSlotsBought = 0;
+                      
+                      userRegs.forEach((reg) => {
+                        const race = categories.find(c => c.id === reg.categoryId);
+                        if (race) {
+                          const [day, month] = race.date.split('.').map(Number);
+                          const raceDate = new Date(2026, month - 1, day);
+                          raceDate.setHours(0, 0, 0, 0);
+                          
+                          if (raceDate < today && reg.selected === "green") {
+                            completedRaces++;
+                          } else if (raceDate >= today) {
+                            futureRaces++;
+                            if (reg.selected === "green") {
+                              futureSlotsBought++;
+                            }
+                          }
+                        }
+                      });
+                      
+                      if (userRegs.length === 0) return null;
+                      
+                      return (
+                        <div key={user.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                          <UserAvatar 
+                            name={user.name} 
+                            gender={user.gender} 
+                            avatarUrl={user.avatarUrl}
+                            className="h-10 w-10 flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{user.name}</p>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              {completedRaces > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <History className="h-3 w-3" />
+                                  {completedRaces}
+                                </span>
+                              )}
+                              {futureRaces > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <CalendarClock className="h-3 w-3" />
+                                  {futureRaces}
+                                  {futureSlotsBought > 0 && (
+                                    <span className="text-[#65a30d] font-medium">({futureSlotsBought})</span>
+                                  )}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+              </div>
+            </aside>
           </div>
         </main>
 
